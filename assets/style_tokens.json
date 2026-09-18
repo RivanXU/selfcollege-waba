@@ -1,0 +1,15 @@
+{
+  "navy": "#17334D",
+  "teal": "#117E82",
+  "ink": "#263746",
+  "muted": "#607485",
+  "line": "#D9E3EA",
+  "blue": "#EDF4FA",
+  "green": "#ECF7F5",
+  "amber": "#FFF5E9",
+  "stripe": "#F5F8FA",
+  "guide_body_size": 10.7,
+  "guide_body_leading": 17.1,
+  "bilingual_body_size": 14,
+  "bilingual_body_leading": 23.5
+}

@@ -1,0 +1,7 @@
+{
+  "name": "selfcollege-waba",
+  "author": "RivanXU",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "requires_api_key": false,
+  "entrypoint": "SKILL.md"
+}

@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# Copyright (c) 2026 RivanXU. See LICENSE and NOTICE.
+interface:
+  display_name: "selfcollege-waba"
+  short_description: "把课件变成逐页对照与零基础精讲，配练习答案，接续你的课程学习。"
+  default_prompt: "请使用 $selfcollege-waba，根据我的课件和学习目标生成逐页对照与精讲 PDF，并接续本课程的学习档案。"
+policy:
+  allow_implicit_invocation: true

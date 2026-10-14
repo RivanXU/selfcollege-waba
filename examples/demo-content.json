@@ -1,0 +1,647 @@
+{
+  "authorship": "Original teaching demonstration by selfcollege-waba; PolyForm Noncommercial 1.0.0 applies",
+  "guide": [
+    {
+      "title": "From forces to fading motion",
+      "subtitle": "What makes an oscillator cross equilibrium while its motion shrinks?",
+      "source": "Authored source-slides.pdf · physical page 1",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "How does a released mass move while a spring restores it and a damper removes energy? Follow forces → differential equation → roots → real motion → initial data, then apply the chain to a new problem."
+        },
+        {
+          "type": "text",
+          "text": "Prerequisites: Newton’s law, time derivatives, the product rule and complex numbers. Here \\(x^{\\prime}\\) is velocity and \\(x^{\\prime\\prime}\\) acceleration. We develop the differential-equation method when it becomes necessary."
+        },
+        {
+          "type": "formula",
+          "latex": "m x^{\\prime\\prime}=F_{\\mathrm{s}}+F_{\\mathrm{d}}=-kx-bx^{\\prime}",
+          "reason": "Choose \\(x=0\\) at equilibrium. The spring force opposes displacement; the viscous damper force opposes velocity. Both are modeling assumptions, not consequences of Newton’s law.",
+          "symbols": [
+            [
+              "F_{\\mathrm{s}},F_{\\mathrm{d}}",
+              "Spring and damping forces (N); functions of displacement and velocity."
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "latex": "m x^{\\prime\\prime}+b x^{\\prime}+kx=0",
+          "reason": "Move the two forces to the left. The zero on the right states that no external driving force acts."
+        },
+        {
+          "type": "table",
+          "header": [
+            "Symbol",
+            "Meaning, units and role"
+          ],
+          "rows": [
+            [
+              "\\(t;\\ x(t)\\)",
+              "Time (s); signed displacement from equilibrium (m), the unknown function."
+            ],
+            [
+              "\\(x^{\\prime}(t);\\ x^{\\prime\\prime}(t)\\)",
+              "Velocity (m/s); acceleration (m/s²), derivatives of the same \\(x(t)\\)."
+            ],
+            [
+              "\\(m>0\\)",
+              "Mass (kg), fixed."
+            ],
+            [
+              "\\(b>0\\)",
+              "Viscous damping coefficient (kg/s = N·s/m), fixed."
+            ],
+            [
+              "\\(k>0\\)",
+              "Spring stiffness (N/m), fixed."
+            ]
+          ],
+          "widths": [
+            0.24,
+            0.76
+          ]
+        },
+        {
+          "type": "box",
+          "label": "Model boundary and next question",
+          "text": "Use one coordinate, a linear spring, a velocity-proportional damper and constant m, b, k. Large deformations, dry friction and forcing require a changed equation. Our equation constrains motion, but does not yet give \\(x(t)\\).",
+          "tone": "amber"
+        }
+      ]
+    },
+    {
+      "title": "Choose an exponential mode",
+      "subtitle": "Use the constant-coefficient structure before solving for rates",
+      "source": "Authored source-slides.pdf · physical page 2",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "An exponential retains its shape when differentiated. That makes it a useful trial for a linear equation with constant coefficients; it is a method choice, not a claim that the visible motion is a simple exponential."
+        },
+        {
+          "type": "formula",
+          "latex": "x=C e^{\\lambda t},\\qquad x^{\\prime}=\\lambda x,\\qquad x^{\\prime\\prime}=\\lambda^2 x",
+          "reason": "Differentiation multiplies the trial by \\(\\lambda\\) once for each derivative.",
+          "symbols": [
+            [
+              "C",
+              "Nonzero trial coefficient (m)."
+            ],
+            [
+              "\\lambda",
+              "Possibly complex rate (s<super>−1</super>), to be determined; \\(i^2=-1\\)."
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "latex": "(m\\lambda^2+b\\lambda+k)C e^{\\lambda t}=0",
+          "reason": "Substitute the trial and its derivatives. Since C is nonzero and the exponential never vanishes, the coefficient must be zero."
+        },
+        {
+          "type": "text",
+          "text": "The exponential factor stays nonzero, so its coefficient must vanish. The next page solves that characteristic equation and explains why the roots describe decay and oscillation."
+        }
+      ]
+    },
+    {
+      "title": "Find modes the equation preserves",
+      "subtitle": "Why an exponential trial turns derivatives into algebra",
+      "source": "Authored source-slides.pdf · physical page 2",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The trial from page 2 requires \\(m\\lambda^2+b\\lambda+k=0\\). Its roots determine which rates satisfy the motion equation. Separate the damping rate from the natural angular frequency."
+        },
+        {
+          "type": "formula",
+          "latex": "\\lambda^2+2\\gamma\\lambda+\\omega_0^2=0",
+          "reason": "Divide by \\(m>0\\) and introduce two rates to separate damping from spring–mass motion.",
+          "symbols": [
+            [
+              "\\gamma=\\frac{b}{2m}",
+              "Decay rate (s<super>−1</super>), fixed and positive."
+            ],
+            [
+              "\\omega_0=\\sqrt{\\frac{k}{m}}",
+              "Undamped angular frequency (rad/s), fixed. Radians are dimensionless."
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "latex": "(\\lambda+\\gamma)^2=\\gamma^2-\\omega_0^2",
+          "reason": "Complete the square. Under \\(0<\\gamma<\\omega_0\\), the right side is negative, so the roots form a complex conjugate pair."
+        },
+        {
+          "type": "formula",
+          "latex": "\\lambda=-\\gamma\\pm i\\omega_{\\mathrm{d}},\\qquad \\omega_{\\mathrm{d}}=\\sqrt{\\omega_0^2-\\gamma^2}",
+          "reason": "Write the square root of the negative number as ±i times a positive rate.",
+          "symbols": [
+            [
+              "\\omega_{\\mathrm{d}}",
+              "Damped angular frequency (rad/s); real and positive only in the underdamped regime."
+            ]
+          ]
+        },
+        {
+          "type": "box",
+          "label": "What the roots tell us",
+          "text": "The real part \\(-\\gamma\\) produces decay; the imaginary parts \\(\\pm\\omega_{\\mathrm{d}}\\) produce oscillation. We still need a real displacement and two constants that fit the initial data.",
+          "tone": "blue"
+        }
+      ]
+    },
+    {
+      "title": "Convert complex modes to real motion",
+      "subtitle": "The product rule carries both the decay and the oscillation",
+      "source": "Authored source-slides.pdf · physical pages 2–3",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Euler’s identity connects a complex exponential to cosine and sine. Because the equation is linear with real coefficients, the real and imaginary parts of a complex solution are real solutions. Their linear combination can match two independent initial data."
+        },
+        {
+          "type": "formula",
+          "latex": "e^{(-\\gamma+i\\omega_{\\mathrm{d}})t}=e^{-\\gamma t}[\\cos(\\omega_{\\mathrm{d}}t)+i\\sin(\\omega_{\\mathrm{d}}t)]",
+          "reason": "Use \\(e^{i\\theta}=\\cos\\theta+i\\sin\\theta\\); \\(\\theta=\\omega_{\\mathrm{d}}t\\) is dimensionless."
+        },
+        {
+          "type": "formula",
+          "latex": "x(t)=e^{-\\gamma t}[A\\cos(\\omega_{\\mathrm{d}}t)+B\\sin(\\omega_{\\mathrm{d}}t)]",
+          "reason": "Use the two real modes. They are independent when \\(\\omega_{\\mathrm{d}}>0\\): their initial displacement–velocity pairs are \\((1,-\\gamma)\\) and \\((0,\\omega_{\\mathrm{d}})\\).",
+          "symbols": [
+            [
+              "A,B",
+              "Real coefficients (m), determined by initial conditions rather than by m, b, k alone."
+            ]
+          ]
+        },
+        {
+          "type": "text",
+          "text": "For differentiation only, call the trigonometric bracket \\(y(t)\\), in metres: \\(x(t)=e^{-\\gamma t}y(t)\\). This helper represents the bracket, not the displacement."
+        },
+        {
+          "type": "formula",
+          "latex": "y^{\\prime}=-A\\omega_{\\mathrm{d}}\\sin(\\omega_{\\mathrm{d}}t)+B\\omega_{\\mathrm{d}}\\cos(\\omega_{\\mathrm{d}}t)",
+          "reason": "Differentiate the bracket. The chain rule contributes \\(\\omega_{\\mathrm{d}}\\) to both trigonometric derivatives."
+        },
+        {
+          "type": "formula",
+          "latex": "x^{\\prime}=-\\gamma e^{-\\gamma t}y+e^{-\\gamma t}y^{\\prime}=e^{-\\gamma t}(y^{\\prime}-\\gamma y)",
+          "reason": "Apply the product rule to the exponential and the bracket; neither is constant."
+        },
+        {
+          "type": "box",
+          "label": "Why the decay term matters",
+          "text": "Differentiating only the trigonometric bracket misses \\(-\\gamma A\\) in the initial velocity. That omission changes B and gives a solution with the wrong launch condition.",
+          "tone": "amber"
+        },
+        {
+          "type": "text",
+          "text": "We now have the general underdamped form and its velocity. The next page uses \\(x(0)\\) and \\(x^{\\prime}(0)\\) to select one motion from this family."
+        }
+      ]
+    },
+    {
+      "title": "Let the initial data choose the solution",
+      "subtitle": "Work the illustrated case, then distinguish displacement from envelope",
+      "source": "Authored source-slides.pdf · physical page 3",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The new givens \\(x_0\\) (m) and \\(v_0\\) (m/s) are the signed initial displacement and velocity. A and B are the real coefficients carried over from page 4."
+        },
+        {
+          "type": "formula",
+          "latex": "x(0)=x_0=A,\\qquad x^{\\prime}(0)=v_0=-\\gamma A+\\omega_{\\mathrm{d}}B",
+          "reason": "Set \\(t=0\\) in the displacement and in both product-rule terms: the exponential and cosine become 1, and the sine becomes 0."
+        },
+        {
+          "type": "formula",
+          "latex": "A=x_0,\\qquad B=\\frac{v_0+\\gamma x_0}{\\omega_{\\mathrm{d}}}",
+          "reason": "Rearrange the initial-velocity equation; division is allowed because \\(\\omega_{\\mathrm{d}}>0\\). Units of the numerator are m/s, so B has units m."
+        },
+        {
+          "type": "text",
+          "text": "Illustrated baseline: \\(m=1\\) kg, \\(b=0.4\\) kg/s, \\(k=4\\) N/m, \\(x_0=0.10\\) m and \\(v_0=0\\). This is a new numerical illustration of the general model."
+        },
+        {
+          "type": "table",
+          "header": [
+            "Quantity",
+            "Baseline calculation"
+          ],
+          "rows": [
+            [
+              "\\(\\gamma\\); \\(\\omega_0\\)",
+              "0.200 s<super>−1</super>; 2.00 rad/s, respectively."
+            ],
+            [
+              "\\(\\omega_{\\mathrm{d}}\\)",
+              "1.989974874 rad/s; 0.2 < 2 confirms underdamping."
+            ],
+            [
+              "\\(A;\\ B\\)",
+              "0.100 m; 0.010050378 m, respectively."
+            ]
+          ],
+          "widths": [
+            0.24,
+            0.76
+          ]
+        },
+        {
+          "type": "formula",
+          "latex": "R=\\sqrt{A^2+B^2},\\qquad |x(t)|\\leq R e^{-\\gamma t}",
+          "reason": "The bracket is a scalar product of (A, B) with (cos θ, sin θ), a unit vector. Its absolute value cannot exceed \\(\\sqrt{A^2+B^2}\\).",
+          "symbols": [
+            [
+              "R",
+              "Constant coefficient of the envelope (m); here \\(R\\approx0.100503782\\) m."
+            ]
+          ]
+        },
+        {
+          "type": "box",
+          "label": "The envelope is not the initial displacement",
+          "text": "\\(A=x_0=0.10\\) m, but \\(R\\approx0.100504\\) m because B is nonzero. Release from rest does not require \\(B=0\\): the exponential also contributes to \\(x^{\\prime}(0)\\). The next page shows this bound over the complete time response.",
+          "tone": "blue"
+        }
+      ]
+    },
+    {
+      "title": "Read oscillation and decay in one graph",
+      "subtitle": "Use the initial-data solution to distinguish a motion from its bound",
+      "source": "Authored source-slides.pdf · physical page 3; tutor derivation",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The time-response chart uses the baseline from page 5. Its solid curve is displacement; the two dashed curves are \\(\\pm R e^{-\\gamma t}\\). Read time in seconds and displacement in metres. The zero crossings show oscillation; the shrinking bounds show decay."
+        },
+        {
+          "type": "source_crop",
+          "source_pdf": "examples/source-slides.pdf",
+          "page": 3,
+          "clip": [
+            36,
+            265,
+            684,
+            518
+          ],
+          "height": 196,
+          "caption": "Original response and envelope plot; source slide 3. Same baseline as page 5."
+        },
+        {
+          "type": "text",
+          "text": "The dashed curves are bounds, not a line connecting the turning points: the changing exponential shifts extrema away from cosine maxima. The envelope time \\(\\tau=\\frac{1}{\\gamma}\\) is 5 s: the envelope falls to \\(e^{-1}\\) of its initial value in 5 s. The oscillatory factor repeats after \\(T_{\\mathrm{d}}=\\frac{2\\pi}{\\omega_{\\mathrm{d}}}\\approx3.15742\\) s."
+        },
+        {
+          "type": "box",
+          "label": "What this figure adds",
+          "text": "The solid curve crosses equilibrium while the dashed bounds shrink. R depends on both launch conditions; the envelope bounds \\(x(t)\\) rather than tracing it. Next we use the force law to account for the decreasing mechanical energy.",
+          "tone": "blue"
+        }
+      ]
+    },
+    {
+      "title": "Connect the force law to energy loss",
+      "subtitle": "An exact power balance explains the decay without assuming a fixed sinusoidal amplitude",
+      "source": "Authored source-slides.pdf · physical page 3; tutor derivation",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The graph from page 6 shows the motion and its bounds. The force law from page 1 supplies an independent check: damping should remove energy whenever the mass moves."
+        },
+        {
+          "type": "formula",
+          "latex": "E=\\frac{1}{2}m(x^{\\prime})^2+\\frac{1}{2}kx^2",
+          "reason": "Mechanical energy is kinetic plus spring potential energy.",
+          "symbols": [
+            [
+              "E",
+              "Mechanical energy (J), a time-dependent quantity."
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "latex": "\\frac{dE}{dt}=m x^{\\prime} x^{\\prime\\prime}+kx x^{\\prime}=x^{\\prime}(m x^{\\prime\\prime}+kx)",
+          "reason": "Apply the chain rule with m and k fixed, then factor out the velocity."
+        },
+        {
+          "type": "formula",
+          "latex": "\\frac{dE}{dt}=-b(x^{\\prime})^2\\leq 0",
+          "reason": "The equation of motion gives \\(mx^{\\prime\\prime}+kx=-bx^{\\prime}\\). Damping removes power at a nonnegative rate; kg/s × (m/s)² has units W."
+        },
+        {
+          "type": "box",
+          "label": "A useful check",
+          "text": "At release from rest, \\(\\frac{dE}{dt}=0\\) at that instant, but energy decreases once the mass moves. The identity above is exact; it does not by itself make E(t) exactly proportional to \\(e^{-2\\gamma t}\\).",
+          "tone": "blue"
+        }
+      ]
+    },
+    {
+      "title": "Original practice: select and predict a new motion",
+      "subtitle": "Full four-part question; worked part (a) starts below",
+      "source": "Tutor-authored practice P1 · all conditions and parts",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "A free mass–spring–damper system has \\(m=2.0\\) kg, \\(b=1.2\\) kg/s and \\(k=18\\) N/m. At \\(t=0\\), \\(x_0=0.080\\) m and \\(v_0=-0.030\\) m/s. The spring and damper remain linear and the coefficients remain constant."
+        },
+        {
+          "type": "table",
+          "header": [
+            "Part",
+            "Task and lesson link"
+          ],
+          "rows": [
+            [
+              "(a)",
+              "Classify the damping and calculate both characteristic roots. Use page 3."
+            ],
+            [
+              "(b)",
+              "Find A and B, then write the complete real solution \\(x(t)\\). Use pages 4–5."
+            ],
+            [
+              "(c)",
+              "Calculate \\(x(1.5\\,\\mathrm{s})\\) to three significant figures. Check it against the envelope bound. Use page 5."
+            ],
+            [
+              "(d)",
+              "Reset to the same m, k, \\(x_0\\) and \\(v_0\\), but double b to 2.4 kg/s. Check the regime and compare \\(\\gamma\\), \\(\\omega_{\\mathrm{d}}\\), the envelope time \\(\\tau\\) (the reciprocal of \\(\\gamma\\)) and the normalized envelope at 1.5 s. Recalculate R and explain whether equal \\(x_0\\) means equal R. Use pages 3, 5–7."
+            ]
+          ],
+          "widths": [
+            0.24,
+            0.76
+          ]
+        },
+        {
+          "type": "box",
+          "label": "Method choice",
+          "text": "Use the underdamped solution only after checking \\(\\gamma<\\omega_0\\). This is an initial-value problem with no driving force, so two launch conditions select A and B.",
+          "tone": "blue"
+        },
+        {
+          "type": "formula",
+          "latex": "\\gamma=\\frac{1.2}{2(2.0)}=0.300\\ \\mathrm{s}^{-1},\\qquad \\omega_0=\\sqrt{\\frac{18}{2.0}}=3.00\\ \\mathrm{rad/s}",
+          "reason": "Part (a): substitute the new parameters into the definitions. Here 0.300 < 3.00, so the system is underdamped."
+        },
+        {
+          "type": "formula",
+          "latex": "\\omega_{\\mathrm{d}}=\\sqrt{3^2-0.3^2}=2.984962311\\ \\mathrm{rad/s}",
+          "reason": "The negative discriminant produces two complex conjugate roots."
+        },
+        {
+          "type": "formula",
+          "latex": "\\lambda=-0.300\\pm 2.984962311i\\ \\mathrm{s}^{-1}",
+          "reason": "Both roots have a negative real part and a nonzero imaginary part: decaying oscillation."
+        },
+        {
+          "type": "text",
+          "text": "Continue with worked parts (b)–(d) on pages 9–10. These answers use the practice data above, not the chart baseline."
+        }
+      ]
+    },
+    {
+      "title": "Predict motion and check the launch data",
+      "subtitle": "Original P1(b)–(c) / Select the coefficients and check the envelope",
+      "source": "Tutor-authored solutions P1(b)–(c)",
+      "blocks": [
+        {
+          "type": "formula",
+          "latex": "B=\\frac{-0.030+(0.300)(0.080)}{2.984962311}\\approx-0.00201008\\ \\mathrm{m}",
+          "reason": "Part (b): \\(A=0.080\\) m from the displacement condition. The velocity relation gives B as above. The initial velocity −0.030 m/s includes the exponential derivative; it is not simply \\(\\omega_{\\mathrm{d}}B\\)."
+        },
+        {
+          "type": "formula",
+          "latex": "x(t)=e^{-0.300t}[0.080\\cos(\\omega_{\\mathrm{d}}t)-0.00201008\\sin(\\omega_{\\mathrm{d}}t)]",
+          "reason": "Use \\(\\omega_{\\mathrm{d}}=2.984962311\\) rad/s from page 8, metres for x and seconds for t. Displayed coefficients are rounded; calculations retain full precision. The launch velocity is −0.030 m/s."
+        },
+        {
+          "type": "text",
+          "text": "Part (c): at \\(t=1.5\\) s, the phase is 4.477443467 rad and the exponential factor is 0.637628152. Substitute both into the solution, preserving the negative sine coefficient."
+        },
+        {
+          "type": "formula",
+          "latex": "x(1.5\\ \\mathrm{s})=-0.010628207\\ \\mathrm{m}\\approx -0.0106\\ \\mathrm{m}",
+          "reason": "The mass lies on the negative side of equilibrium. Its absolute displacement, 0.0106282 m, is below the envelope 0.0510264 m."
+        },
+        {
+          "type": "text",
+          "text": "Part (d) continues on page 10. It resets to the same launch conditions and changes only the damping coefficient."
+        }
+      ]
+    },
+    {
+      "title": "Change damping, then refit the launch data",
+      "subtitle": "Original P1(d) / Reset to the same mass, stiffness, displacement and velocity",
+      "source": "Tutor-authored solution P1(d)",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Part (d): change only b. The critical value is \\(b_{\\mathrm{c}}=2\\sqrt{mk}=12\\) kg/s, so \\(b=2.4\\) kg/s remains underdamped. Keeping the same launch conditions requires recalculating B and R."
+        },
+        {
+          "type": "table",
+          "header": [
+            "Quantity",
+            "b = 1.2 kg/s",
+            "b = 2.4 kg/s"
+          ],
+          "rows": [
+            [
+              "\\(\\gamma\\) (s<super>−1</super>)",
+              "0.300",
+              "0.600"
+            ],
+            [
+              "\\(\\omega_{\\mathrm{d}}\\) (rad/s)",
+              "2.984962",
+              "2.939388"
+            ],
+            [
+              "\\(\\tau\\) (s)",
+              "3.33333",
+              "1.66667"
+            ],
+            [
+              "B (m)",
+              "−0.00201008",
+              "0.00612372"
+            ],
+            [
+              "R (m)",
+              "0.08002525",
+              "0.08023403"
+            ],
+            [
+              "\\(e^{-\\gamma\\times1.5}\\)",
+              "0.637628",
+              "0.406570"
+            ],
+            [
+              "\\(R e^{-\\gamma\\times1.5}\\) (m)",
+              "0.05102635",
+              "0.03262072"
+            ]
+          ],
+          "widths": [
+            0.28,
+            0.36,
+            0.36
+          ]
+        },
+        {
+          "type": "text",
+          "text": "The decay rate doubles and the envelope time halves, while \\(\\omega_{\\mathrm{d}}\\) decreases about 1.53%. The normalized envelope isolates this rate change. Equal \\(x_0\\) does not make R equal: B depends on both changed \\(\\gamma\\) and \\(\\omega_{\\mathrm{d}}\\) through the initial-velocity equation on page 5. R is also slightly larger than \\(x_0\\) in both cases."
+        },
+        {
+          "type": "box",
+          "label": "Do not compare displacement using the envelope alone",
+          "text": "A faster-decaying envelope does not make \\(|x(t)|\\) smaller at every instant, because phase and frequency also change. At 1.5 s the changed system has \\(x\\approx-0.0120908\\) m, even though its envelope is smaller.",
+          "tone": "amber"
+        }
+      ]
+    },
+    {
+      "title": "Limits reveal when to change methods",
+      "subtitle": "Transfer the model; do not extend one regime beyond its condition",
+      "source": "Authored source-slides.pdf · physical pages 1–3; tutor transfer",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Undamped limit: if b tends to zero with m and k fixed, \\(\\gamma\\) tends to zero and \\(\\omega_{\\mathrm{d}}\\) tends to \\(\\omega_0\\). The exponential disappears and the initial-condition solution becomes ordinary simple harmonic motion."
+        },
+        {
+          "type": "formula",
+          "latex": "x(t)\\longrightarrow x_0\\cos(\\omega_0t)+\\frac{v_0}{\\omega_0}\\sin(\\omega_0t)",
+          "reason": "Take the limit of the complete solution, including B. The energy identity then gives \\(\\frac{dE}{dt}=0\\)."
+        },
+        {
+          "type": "text",
+          "text": "Critical boundary: when \\(\\gamma\\) tends to \\(\\omega_0\\) from below, \\(\\omega_{\\mathrm{d}}\\) tends to zero. The apparent division by \\(\\omega_{\\mathrm{d}}\\) is resolved because \\(\\frac{\\sin(\\omega_{\\mathrm{d}}t)}{\\omega_{\\mathrm{d}}}\\) tends to \\(t\\); taking the limit of B alone would miss this cancellation."
+        },
+        {
+          "type": "formula",
+          "latex": "x(t)\\longrightarrow e^{-\\omega_0t}[x_0+(v_0+\\omega_0x_0)t]",
+          "reason": "Take the limit of the complete expression. At critical damping the repeated-root solution is no longer a sinusoid. For b greater than \\(2\\sqrt{mk}\\), use two real exponential modes instead."
+        },
+        {
+          "type": "box",
+          "label": "Original transfer check",
+          "text": "Double m while keeping b and k fixed. Must an originally underdamped system become overdamped? Use the definitions before answering.",
+          "tone": "blue"
+        },
+        {
+          "type": "formula",
+          "latex": "\\gamma_{\\mathrm{new}}=\\frac{\\gamma}{2},\\qquad \\omega_{0,\\mathrm{new}}=\\frac{\\omega_0}{\\sqrt{2}},\\qquad \\frac{\\gamma_{\\mathrm{new}}}{\\omega_{0,\\mathrm{new}}}=\\frac{1}{\\sqrt{2}}\\frac{\\gamma}{\\omega_0}",
+          "reason": "Answer: no. The ratio of decay rate to undamped angular frequency becomes smaller, so an underdamped system stays underdamped. This prediction assumes the same b and k remain valid when m changes."
+        },
+        {
+          "type": "text",
+          "text": "Recognition cues: force balance establishes the model; constant coefficients invite exponential trials; complex conjugate roots invite decaying sine and cosine; initial displacement and velocity fix both coefficients. Check the regime before dividing by \\(\\omega_{\\mathrm{d}}\\)."
+        },
+        {
+          "type": "text",
+          "text": "Useful next attempt: solve P1 again from the force law without looking at pages 8–10. Check the force units, the initial velocity and the envelope bound. Receiving this guide does not demonstrate mastery."
+        }
+      ]
+    }
+  ],
+  "bilingual": [
+    {
+      "source_page": 1,
+      "title": "Establish the force model",
+      "guide_pages": "1–3, 8",
+      "terms": [
+        [
+          "Equilibrium / 平衡位置",
+          "\\(x=0\\) is the coordinate origin."
+        ],
+        [
+          "Viscous damping / 黏性阻尼",
+          "A model force proportional to velocity."
+        ]
+      ],
+      "notes": [
+        {
+          "label": "Foundation bridge",
+          "text": "Guide page 1 explains force signs, derivative notation, units and model conditions before solving.",
+          "source": "Tutor foundation supplement; authored source slide 1"
+        }
+      ],
+      "homework": [
+        {
+          "label": "Original practice P1",
+          "text": "Complete original P1(a)–(d): guide page 8. All worked answers: pages 8–10.",
+          "source": "Tutor-authored original practice; new parameters"
+        }
+      ]
+    },
+    {
+      "source_page": 2,
+      "title": "Derive and interpret the roots",
+      "guide_pages": "2–4, 8, 10–11",
+      "terms": [
+        [
+          "Characteristic root / 特征根",
+          "A rate preserved by differentiation."
+        ],
+        [
+          "Underdamped / 欠阻尼",
+          "\\(0<\\gamma<\\omega_0\\); decaying oscillation."
+        ]
+      ],
+      "notes": [
+        {
+          "label": "Connect the steps",
+          "text": "Guide page 3 solves and interprets the roots; page 4 converts complex modes to real motion. Page 11 checks limiting regimes.",
+          "source": "Tutor derivation; authored source slide 2"
+        }
+      ],
+      "homework": [
+        {
+          "label": "Original practice P1(a)",
+          "text": "Complete original P1(a)–(d): guide page 8. All worked answers: pages 8–10.",
+          "source": "Tutor-authored original practice"
+        }
+      ]
+    },
+    {
+      "source_page": 3,
+      "title": "Fit initial data and read the response",
+      "guide_pages": "4–7, 9–10",
+      "terms": [
+        [
+          "Initial condition / 初始条件",
+          "\\(x_0\\) and \\(v_0\\) select one motion."
+        ],
+        [
+          "Envelope / 包络线",
+          "A bound \\(\\pm R e^{-\\gamma t}\\), with \\(R=\\sqrt{A^2+B^2}\\)."
+        ]
+      ],
+      "notes": [
+        {
+          "label": "Resolve a common confusion",
+          "text": "Guide pages 4–5 use the product rule and initial data and explain why R need not equal the initial displacement. Pages 6–7 connect the response graph to energy loss.",
+          "source": "Tutor explanation; authored source slide 3"
+        }
+      ],
+      "homework": [
+        {
+          "label": "Original practice P1(b–d)",
+          "text": "Complete original P1(a)–(d): guide page 8. All worked answers: pages 8–10.",
+          "source": "Tutor-authored original practice; baseline resets explicitly"
+        }
+      ]
+    }
+  ]
+}

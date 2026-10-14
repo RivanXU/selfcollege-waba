@@ -1,57 +1,33 @@
-# Original neutral study example
+# Original university teaching example
 
-This public example demonstrates a connected study workflow: read the complete
-source, connect consecutive ideas, explain the reasoning, and use it in practice.
-Its invented source log provides a small mathematical example: checked items as
-a fraction of listed items. The fraction describes recorded source-check coverage;
-it is not a score for mastery, understanding, teaching quality or learning outcomes.
+A damped mass-spring oscillator demonstrates one connected university-level reasoning chain. Newton's force balance becomes a differential equation; an exponential trial reveals characteristic roots; conjugate roots produce real oscillations; initial displacement and velocity determine the constants. A time-response graph shows the decaying envelope, and complete practice applies the same method under changed conditions.
 
-All slides, questions, text and illustrations were independently authored for this
-repository. The example uses no real course, institution, lecturer, student record,
-classroom recording, assignment or private source material. It presents generic
-study actions that can be adapted to arguments, procedures, code and calculations.
-
-The two decks deliberately use **academic English and plain English** so every
-public demonstration remains English. This shows the same layout contract used
-for translation: titles, text origins, workflow boxes, ledger cells, fractions and
-other visual elements share their geometry. The mirror changes wording; added
-teaching material appears only in the band below both panels. It is a same-language
-adaptation example, not evidence of a cross-language translation. Real language
-pairs require supported fonts, readable text and translation review.
+Every slide, problem, numerical case and figure was authored for this repository. It uses no real course, institution, lecturer, student record, classroom recording, assignment or private source. The example illustrates teaching methods; it does not establish learner mastery or performance across every discipline.
 
 | File | Purpose |
 | --- | --- |
-| [source-slides.pdf](source-slides.pdf) | Three original neutral source slides in academic English. |
-| [translated-slides.pdf](translated-slides.pdf) | The corresponding plain-English mirror with the same slide geometry. |
-| [slide-companion.pdf](slide-companion.pdf) | Equal source and mirror viewports, followed by a full-width annotation band. |
-| [beginner-study-guide.pdf](beginner-study-guide.pdf) | Eight connected pages: workflow, foundations, nearby symbol definitions, justified fraction steps, complete practice and interpretation. |
-| [demo-spec.json](demo-spec.json) | Portable companion configuration, vocabulary, bottom notes and accurate guide-page references. |
-| [validation.json](validation.json) | Actual page counts, authorship, metadata treatment and visual review status. |
+| [source-slides.pdf](source-slides.pdf) | Three original English slides in course order. |
+| [translated-slides.pdf](translated-slides.pdf) | Corresponding Chinese slides with the same objects, equations and plotted values. |
+| [slide-companion.pdf](slide-companion.pdf) | Equal-scale original/translation panels, with all additional notes below. |
+| [beginner-study-guide.pdf](beginner-study-guide.pdf) | Eleven connected pages with modeling, key derivations, local notation, a useful figure, a complete problem and all answers. |
+| [demo-content.json](demo-content.json) | Original authored guide content and companion notes for reproducible rebuilding. |
+| [demo-spec.json](demo-spec.json) | Portable input for the bundled renderer. |
+| [validation.json](validation.json) | Actual page counts, authorship, export and review status. |
 
-The guide follows the three source slides in order. It explains the workflow, then
-defines the checked fraction and derives its relationship to the pending fraction.
-The complete original practice question, all conditions and all four subparts
-appear on page 6; pages 6-7 solve them using the preceding knowledge blocks. Page 8
-compares two fresh synthetic logs and explains why a count and a fraction answer
-different questions. Short cross-disciplinary examples on page 5 connect the
-workflow to arguments, procedures, programming and calculations.
+The guide follows all three slides. Pages 1–3 establish the model and roots; pages 4–5 connect the real solution and initial data; pages 6–7 explain the graph and exact energy balance. Page 8 contains the entire four-part authored question and the first worked part. Pages 9–10 solve the remaining parts, including the altered damping case. Page 11 checks limiting regimes and transfers the method. Routine arithmetic is concise; missing subject-specific concepts are explained where needed.
 
-![Matched neutral source and mirror, with all added notes below](previews/comparison.png)
+![Matched English and Chinese oscillator slides with all extra notes below](previews/comparison.png)
 
-![A connected fraction derivation with symbols and one reason for each step](previews/explanation.png)
+![Initial conditions, justified mathematical steps and envelope interpretation](previews/explanation.png)
 
-![The complete original practice question, its prerequisite links and the start of its solution](previews/practice.png)
+![The complete original four-part problem and method selection](previews/practice.png)
 
-To rebuild the files, install the repository's requirements and Poppler, then run:
+The figure uses m = 1 kg, b = 0.4 kg/s, k = 4 N/m, initial displacement 0.1 m and initial velocity 0. It plots the exact displacement and the two envelopes over 0–10 s; curve shapes, axes, values and labels correspond across languages. The exercise resets to m = 2 kg, b = 1.2 kg/s, k = 18 N/m, displacement 0.08 m and velocity −0.03 m/s. Source and exercise parameters are kept distinct.
+
+To rebuild, install the repository's requirements and Poppler, then run:
 
 ```bash
 python scripts/build_examples.py
 ```
 
-The builder stages and renders every PDF before replacing the maintained bundle.
-It puts the complete visual review set in `tmp/example-qa/`, outside the published
-package. Fractions use horizontal numerator/denominator bars and vector glyphs.
-Public PDF metadata uses only the product name and fixed UTC dates. Human review
-is still required before publishing a regenerated output: successful rendering
-and equal drawing coordinates alone do not establish teaching quality or content
-fidelity. A fresh build resets the recorded review status to pending.
+The builder stages and renders every PDF before replacing maintained artifacts. Actual page images are saved in tmp/example-qa/, outside the public bundle. Desktop previews are exported directly from actual PDF pages at 216dpi for the companion and 288 dpi for guide pages, without resampling older bitmaps. Text uses embedded Liberation Sans or Noto Sans SC Regular; mathematics uses Computer Modern vector glyphs and genuine fraction bars. Fixed UTC PDF metadata contains only the product identity. A fresh build resets visual acceptance to pending. Rendering success and matched coordinates require semantic and visual review before publication.

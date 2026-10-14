@@ -16,9 +16,28 @@ The beginner guide opens with the lecture question and connected module route. E
 
 Render genuine mathematics matching the source structure: stacked fractions with bars, correct powers/subscripts, roots, integrals, matrices. Introduce every new symbol beside/below its first equation with meaning, role, index, units/domain, and fixed/variable status. Distinguish function arguments from multiplication, labels from powers, percent from decimal, levels from increments, and parameters from computed results. Preserve source notation changes, using clearly mapped teaching aliases when needed.
 
-Give every transformation a separate readable step and its reason: definition, substitution, rule, assumption, or theorem. Show intermediate expressions and relevant conditions. Say what each intermediate result establishes and what constraint/idea is needed next. For numerical examples separate general formula, chosen function, assumptions/givens, substitution, arithmetic, result, and interpretation. Explain resets to baseline and changes of assumptions. Equal numbers do not make different concepts identical: explain the definitions and conditions behind any equality.
+Give each important transformation a separate readable step and its reason: definition, substitution, rule, assumption, or theorem. Show intermediate expressions and relevant conditions. Say what each intermediate result establishes and what constraint/idea is needed next. For numerical examples separate general formula, chosen function, assumptions/givens, substitution, arithmetic, result, and interpretation. Explain resets to baseline and changes of assumptions. Equal numbers do not make different concepts identical: explain the definitions and conditions behind any equality.
 
 Apply the same connected reasoning to humanities claims/evidence, code state/debugging, or practical procedures and evaluation. Do not force formulas into non-mathematical subjects. Explain figures' axes/labels/units, reading path, and their relationship to nearby reasoning.
+
+Short conditions, definitions and calculated values can remain in the nearby
+explanation. Display important derivations as justified steps; simplifying the
+page layout must preserve the complete reasoning and every question subpart.
+Choose necessary foundations relative to my course and demonstrated gaps. Keep
+routine arithmetic concise; explain model choice and consequential mathematical
+steps instead of automatically reteaching elementary operations.
+
+Preserve and explain useful source figures. Add a new chart only when it helps
+answer the learning question or I request it. Prefer words or a light table for
+simple small datasets. Give a worthwhile chart enough room and readable labels;
+keep formulas proportionate. My later preferences take priority over defaults.
+
+Short mathematical conditions and evaluated values belong in nearby prose at
+body size, with proper scripts, fraction bars and mathematical spacing. Keep
+important long derivations on separate moderate lines. When using the bundled
+PDF renderer, explicitly mark inline math as `\(LaTeX\)`; preserve ordinary prose
+and programming code literally. Verify mixed Chinese/English baselines and line
+spacing in the actual PDF.
 
 Include supplied homework questions with all conditions, diagrams, instructions, and subparts inside the guide at the relevant modules. Cross-module questions follow the last needed module with links back. Map asks, givens, unknowns, concepts, pages, method and conditions; explain method choice, each solution step, checks, and recognition cues. Separate official answers, tutor solutions, and authored practice. Follow my hints/solutions preference and supplied assignment rules. Missing questions remain explicit gaps.
 

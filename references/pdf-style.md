@@ -6,7 +6,7 @@ Use this reference when authoring the study guide or slide companion. The render
 
 ## Two distinct reading experiences
 
-The **study guide** teaches one connected learning unit at a time. Use the chain: question -> necessary prerequisite -> definitions -> why the equation applies -> one justified change per line -> worked calculation -> interpretation -> linked homework. A new symbol receives its definition beside the first equation that uses it. Put a homework question, its source location, the relevant lesson, each solution step and a check together. Explicitly distinguish source statements, instructor remarks and added explanations.
+The **study guide** teaches one connected learning unit at a time. Use the chain: question -> necessary prerequisite -> definitions -> why the equation applies -> one important justified change per line -> worked calculation -> interpretation -> linked homework. A new symbol receives its definition beside the first equation that uses it. Put a homework question, its source location, the relevant lesson, each solution step and a check together. Explicitly distinguish source statements, instructor remarks and added explanations.
 
 The **slide companion** preserves a page-for-page pair of slides. Above the annotation band, the source page and translated page have identical viewport dimensions and exactly the same scale. Translation belongs in the source slide's corresponding text boxes, with the same hierarchy, graphics, equation positions and reading order. Vocabulary, prerequisites, instructor remarks, homework links and explanatory additions all belong in a full-width band below both slides. The translation page must be prepared before using this compositor, preferably by editing a duplicate of the original slide deck and exporting it. A matching page size alone does not prove matching layout or complete translation.
 
@@ -14,8 +14,9 @@ If editable slides are unavailable, manually reconstruct a faithful translation 
 
 ## Readable knowledge blocks
 
-- Study-guide defaults: A4 portrait, 47-point margins, 11.5-point body with 18.5-point leading; 13.2-point section headings; 21-point page titles; 15-point mathematics. Display math is about 1.3 times the body size, with 3-point vertical padding on each side. Symbol legends use math at 1.2 times their table text size. Fractions require more physical height than a single text line; give them that height without enlarging every glyph.
+- Study-guide defaults: A4 portrait, 47-point margins, 11.5-point body with 18.5-point leading; 13.2-point section headings; 21-point page titles; 13.2-point mathematics. Display math is about 1.15 times the body size, with 3-point vertical padding on each side. Symbol legends use math at 1.2 times their table text size. Fractions require more physical height than a single text line; give them that height without enlarging every glyph.
 - Group a connected concept under one heading. Keep its prerequisites, derivation, symbol definitions, worked example and interpretation together or continue onto an explicitly titled next page. Leave 16 points between concept groups.
+- Short conditions or evaluated values can remain in nearby prose, at that paragraph's font size. Author mathematical runs explicitly with `\(LaTeX\)` for true scripts and operator spacing; ordinary prose and code retain their literal contents. Use displayed formula blocks for substantial relations and derivations, with real fraction structure and adjacent reasons. Page simplification preserves the original question, all subparts and the full reasoning; it does not require a separate large block for every short equality.
 - A page can contain multiple related blocks, but its structure follows the knowledge dependency, not the source slide's line breaks. Avoid paragraphs that cram several unexplained operations into one sentence.
 - Slide-companion defaults: 1190.551 x 841.89 points, 36-point outer margins, a 32-point column gap and a 200-point annotation band. Both complete pages fit the available viewports at one shared scale. Increase the output page height or annotation band for more notes; avoid making the text smaller.
 - Body, vocabulary tables, equations, captions and notes retain distinct roles. Source PDF text and graphics remain vector where they were vector; scanned source pages remain scans.
@@ -52,10 +53,33 @@ A paired companion requires `source_pdf` and `translated_pdf`. Both PDFs must co
     {
       "source_page": 1,
       "title": "A matched pair of slides",
-      "terms": [["Ratio", "A comparison obtained by division"]],
-      "notes": [{"label": "Prerequisite", "text": "Explain the assumed concept here.", "source": "Added explanation; source slide 1"}],
-      "transcript": [{"label": "Instructor remark", "text": "A verified remark from the provided recording.", "source": "Recording 03:14"}],
-      "homework": [{"label": "Practice link", "text": "Question 1 uses this ratio; its complete worked solution is on guide page 2.", "source": "Problem sheet, question 1"}],
+      "terms": [
+        [
+          "Ratio",
+          "A comparison obtained by division"
+        ]
+      ],
+      "notes": [
+        {
+          "label": "Prerequisite",
+          "text": "Explain the assumed concept here.",
+          "source": "Added explanation; source slide 1"
+        }
+      ],
+      "transcript": [
+        {
+          "label": "Instructor remark",
+          "text": "A verified remark from the provided recording.",
+          "source": "Recording 03:14"
+        }
+      ],
+      "homework": [
+        {
+          "label": "Practice link",
+          "text": "Question 1 uses this ratio; its complete worked solution is on guide page 2.",
+          "source": "Problem sheet, question 1"
+        }
+      ],
       "guide_pages": "1-2"
     }
   ],
@@ -69,9 +93,35 @@ A paired companion requires `source_pdf` and `translated_pdf`. Both PDFs must co
           "type": "concept",
           "title": "From a comparison to an equation",
           "blocks": [
-            {"type": "text", "text": "Introduce the question and necessary prerequisite."},
-            {"type": "formula", "latex": "r=\\frac{a}{b}", "reason": "Divide the quantity being compared by its reference quantity. The reference must be nonzero.", "symbols": [["r", "The ratio"], ["a", "The quantity being compared"], ["b", "The nonzero reference quantity"]]},
-            {"type": "box", "label": "Check understanding", "text": "Explain how the equation answers the original question.", "tone": "green"}
+            {
+              "type": "text",
+              "text": "Introduce the question and necessary prerequisite."
+            },
+            {
+              "type": "formula",
+              "latex": "r=\\frac{a}{b}",
+              "reason": "Divide the quantity being compared by its reference quantity. The reference must be nonzero.",
+              "symbols": [
+                [
+                  "r",
+                  "The ratio"
+                ],
+                [
+                  "a",
+                  "The quantity being compared"
+                ],
+                [
+                  "b",
+                  "The nonzero reference quantity"
+                ]
+              ]
+            },
+            {
+              "type": "box",
+              "label": "Check understanding",
+              "text": "Explain how the equation answers the original question.",
+              "tone": "green"
+            }
           ]
         }
       ]
@@ -86,20 +136,73 @@ The example's transcript entry is schema illustration only. Omit that field when
 
 ## Mathematics with genuine fraction bars
 
-A formula block requires `latex` and `reason`. Use `\frac{numerator}{denominator}` for division, braces for multi-character scripts and a separate block for each derivation step. The renderer does not accept a `formula.text` field and slash fractions. It draws supported MathText LaTeX as PDF vector outlines, including actual fraction rules, superscripts and subscripts. Text font failures do not permit deleting symbols.
+A formula block requires `latex` and `reason`. Use `\frac{numerator}{denominator}` for division, braces for multi-character scripts and a separate block for each consequential derivation step. The renderer does not accept a `formula.text` field and slash fractions. It draws supported MathText LaTeX as PDF vector outlines, including actual fraction rules, superscripts and subscripts. Text font failures do not permit deleting symbols.
+
+Short mathematical expressions in body text, table cells, reasons, captions and
+annotation notes use explicit `\(...\)` delimiters. In JSON the backslashes must
+be escaped. For example:
+
+```json
+{
+  "type": "text",
+  "text": "The condition \\(a=100\\) stays inside this sentence. The initial value \\(x_0=0.10\\) m determines \\(A\\); the phase is \\(\\omega_{\\mathrm{d}}t\\)."
+}
+```
+
+Inline math inherits the surrounding text size and color, including table and
+caption styles. It uses the same vector Computer Modern glyphs and fraction
+rules as standalone math. Each side has a 0.08-em gap; actual glyph and fraction
+bar bounds determine baseline, line height and reflow. Main fraction operands
+keep the peer size, while genuine scripts and nested fractions retain their
+smaller hierarchy. A formula is one atomic run: if it exceeds the available
+column width, the renderer fails instead of shrinking or breaking it through a
+symbol. Move that expression into an appropriately split formula block.
+
+Only these explicit delimiters trigger mathematical interpretation. The renderer
+does not guess that a number, programming operator or ordinary word is math.
+Escaped literal delimiters remain text. Unclosed, nested or empty math runs,
+unsupported commands and unapproved paragraph markup fail before publication.
+The internal inline layout reserves native paragraph geometry, but draws vector
+paths, not bitmap images; ordinary paragraphs retain the original rendering path.
+
+Standalone formula blocks promote display-level `\frac` to `\dfrac` before
+typesetting. Main variables in its numerator and denominator keep the same
+point size as peer variables outside the fraction. True superscripts/subscripts
+and nested fractions retain their normal smaller hierarchy. The original `latex`
+is preserved. Mathematical variables use standard italic glyphs, while operators
+use upright glyphs from the matching Computer Modern Roman face. The bundled
+Matplotlib engine supplies the BaKoMa Computer Modern italic, Roman, symbol and
+extension faces; their notices are retained in licenses/BAKOMA.txt. Extra fraction height is
+handled by spacing or pagination, never by shrinking one side of a comparison.
 
 The fraction rule applies to displayed mathematical division such as `a/b` or `dy/dx`. Preserve actual programming operators, file paths, unit labels and structural slash notation from the source. Ordinary prose/code outside formula blocks is untouched. Inside a formula, mark a literal unit/code/text region explicitly, for example `\mathrm{m/s}`, `\mathtt{a/b}` or `\text{path/to/file}`. A structural slash can be written as `\text{/}`. These literal regions retain their slash; they must not be used to disguise a displayed fraction.
 
 ```json
 [
-  {"type":"formula","label":"Step 2: substitute the values","latex":"r=\\frac{12}{4}","reason":"Replace the numerator and denominator using the quantities identified in the question.","symbols":[["r","A unitless ratio because both quantities have the same unit"]]},
-  {"type":"formula","label":"Step 3: evaluate the division","latex":"r=3","reason":"Twelve divided by four equals three. The compared quantity is three times its reference quantity."}
+  {
+    "type": "formula",
+    "label": "Differentiate both changing factors",
+    "latex": "x^{\\prime}=e^{-\\gamma t}(y^{\\prime}-\\gamma y)",
+    "reason": "Apply the product rule to x(t)=exp(-gamma t)y(t). Differentiating the decaying exponential contributes the negative gamma term.",
+    "symbols": [
+      [
+        "y",
+        "The trigonometric bracket, a time-dependent helper measured in metres"
+      ]
+    ]
+  },
+  {
+    "type": "formula",
+    "label": "Use the initial velocity to select the second coefficient",
+    "latex": "B=\\frac{v_0+\\gamma A}{\\omega_{\\mathrm{d}}}",
+    "reason": "At t=0 the velocity relation is v0=-gamma A+omega_d B. A comes from the initial displacement; omega_d must be positive before division. Together these conditions select one motion."
+  }
 ]
 ```
 
 The first column of `symbols` is a LaTeX math expression, also rendered as a vector formula. The second column is explanatory text. Define every newly introduced symbol nearby, including its units, role, index and relevant domain. The renderer cannot decide whether those definitions or the mathematical claim are correct; the author performs that check.
 
-MathText supports a useful LaTeX subset rather than a full TeX installation. Unsupported commands, warning-producing expressions and over-wide equations fail. Rewrite an equivalent supported expression or provide a verified vector source crop; never silently replace it with a slash or shrink it to fit. An `image` block is an explicit image fallback and cannot be described as vector mathematics. Long derivations use one step per formula block. Supply a readable verbal explanation as well as the formula because these PDFs are not tagged accessible documents and mathematical outlines are not searchable text.
+MathText supports a useful LaTeX subset rather than a full TeX installation. Unsupported commands, warning-producing expressions and over-wide equations fail. Rewrite an equivalent supported expression or provide a verified vector source crop; never silently replace it with a slash or shrink it to fit. An `image` block is an explicit image fallback and cannot be described as vector mathematics. Long derivations use one consequential step per formula block; short conditions and routine arithmetic can stay in nearby prose. Supply a readable verbal explanation as well as the formula because these PDFs are not tagged accessible documents and mathematical outlines are not searchable text.
 
 The bundled engine handles common fractions, ordinary/partial derivatives, integrals, sums, roots, logarithms and mathematical alphabets. Matrix, cases and aligned environments such as `\begin{pmatrix}`, `\begin{cases}` and `\begin{aligned}` require another capable engine; they are not supported by the bundled formula block. Use separate formula blocks for an aligned derivation. For a new matrix or piecewise expression, typeset it with an available full TeX-compatible engine, export a local vector PDF, and embed its verified page/region with `source_crop`. Keep the derivation reason and symbol legend immediately beside/below that crop as ordinary guide blocks. If such an engine is unavailable, report that precise limitation rather than claiming the expression was rendered. A source crop of an existing source formula is useful only when it actually contains the required expression.
 
@@ -107,9 +210,38 @@ For example, after authoring and verifying a tightly bounded local PDF of a matr
 
 ```json
 [
-  {"type":"source_crop","source_pdf":"/absolute/path/authored-matrix-equation.pdf","page":1,"height":95,"caption":"Tutor derivation, step 3; vector equation authored with a full TeX engine"},
-  {"type":"text","text":"Why this step follows: collect the two simultaneous linear equations into one matrix equation. The first row reproduces the first equation; the second row reproduces the second."},
-  {"type":"table","header":["Symbol","Meaning in this step"],"rows":[["A","The 2 by 2 matrix of fixed coefficients"],["x","The column vector of the two unknowns"],["b","The column vector of given right-hand sides"]]}
+  {
+    "type": "source_crop",
+    "source_pdf": "/absolute/path/authored-matrix-equation.pdf",
+    "page": 1,
+    "height": 95,
+    "caption": "Tutor derivation, step 3; vector equation authored with a full TeX engine"
+  },
+  {
+    "type": "text",
+    "text": "Why this step follows: collect the two simultaneous linear equations into one matrix equation. The first row reproduces the first equation; the second row reproduces the second."
+  },
+  {
+    "type": "table",
+    "header": [
+      "Symbol",
+      "Meaning in this step"
+    ],
+    "rows": [
+      [
+        "A",
+        "The 2 by 2 matrix of fixed coefficients"
+      ],
+      [
+        "x",
+        "The column vector of the two unknowns"
+      ],
+      [
+        "b",
+        "The column vector of given right-hand sides"
+      ]
+    ]
+  }
 ]
 ```
 
@@ -145,7 +277,7 @@ Defaults and output filenames are English: `<file_stem>_study-guide.pdf` and `<f
 
 Use `labels` to change `source_heading`, `translation_heading`, `terms_heading`, `symbol_heading`, `symbol_meaning_heading`, `guide_name`, `bilingual_name`, `guide_header`, `bilingual_header`, `source_footer` or `guide_reference_footer`. Set the two symbol headings in the learner's chosen language, independently of the public package language. Header labels follow the output name when omitted. Footer placeholders are restricted to `{filename}`, `{page}` and `{pages}` in their respective fields. Names must be plain filename stems; the two outputs must have distinct names. Headers and footer pairs are measured before drawing; shorten metadata or use compact page ranges when they cannot fit, keeping the full title and detailed locators in the page body or annotation band.
 
-Use `--style /absolute/path/style-overrides.json` for a course-owned JSON containing only known keys from `assets/style_tokens.json`. Colors are six-digit `#RRGGBB`; dimensions are finite positive numbers; leading is at least body font size. Guide `formula_size` must be at least the body size and no more than 1.5 times it; the default is about 1.3 times. This keeps equations readable without turning them into headlines. Overrides preserve bundled assets. Do not lower readable sizes to force more content onto a page.
+Use `--style /absolute/path/style-overrides.json` for a course-owned JSON containing only known keys from `assets/style_tokens.json`. Colors are six-digit `#RRGGBB`; dimensions are finite positive numbers; leading is at least body font size. Guide `formula_size` must be at least the body size and no more than 1.5 times it; the default is about 1.15 times. This keeps equations readable without turning them into headlines. Overrides preserve bundled assets. Do not lower readable sizes to force more content onto a page.
 
 ## Safety and verification
 

@@ -30,6 +30,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Flowable, Image, Paragraph, Spacer, Table, TableStyle
+from inline_math import inline_math_paragraph
 from matplotlib.font_manager import FontProperties
 from matplotlib.ft2font import LoadFlags
 from matplotlib.mathtext import MathTextParser
@@ -282,6 +283,104 @@ def has_fraction_slash(latex):
     return False
 
 
+def display_fraction_latex(expression):
+    """Give display-level fractions full-size operands; preserve script nesting.
+
+    MathText treats ``\\frac`` as a text-style fraction even in a standalone
+    block. Promote only ordinary fractions at the current display level. Leave
+    explicitly requested styles, nested fractions, scripts and literal text
+    alone. The MathText parser remains responsible for syntax validation.
+    """
+    command = re.compile(r'\\[A-Za-z]+|\\.')
+    literals = {'text', 'mathrm', 'mathtt', 'operatorname'}
+
+    def group_end(start, limit):
+        depth, pos = 1, start + 1
+        while pos < limit and depth:
+            if expression[pos] == '\\':
+                match = command.match(expression, pos)
+                pos = match.end() if match else pos + 1
+                continue
+            depth += (expression[pos] == '{') - (expression[pos] == '}')
+            pos += 1
+        return pos, depth == 0
+
+    def argument(pos, display, limit):
+        start = pos
+        while pos < limit and expression[pos].isspace():
+            pos += 1
+        prefix = expression[start:pos]
+        if pos >= limit:
+            return prefix, pos
+        if expression[pos] == '{':
+            end, closed = group_end(pos, limit)
+            if not closed:
+                # Never repair malformed source silently. Let MathText reject it.
+                return expression[start:end], end
+            return prefix + '{' + walk(pos + 1, end - 1, display) + '}', end
+        if expression[pos] == '\\':
+            match = command.match(expression, pos)
+            end = match.end() if match else pos + 1
+            # MathText requires braced fraction operands. Leave invalid unbraced
+            # commands intact for its normal explicit unsupported-input error.
+            return prefix + expression[pos:end], end
+        return prefix + expression[pos], pos + 1
+
+    def walk(start, end, display):
+        result, pos = [], start
+        while pos < end:
+            char = expression[pos]
+            if char in '^_':
+                value, pos = argument(pos + 1, False, end)
+                result.extend([char, value])
+            elif char == '{':
+                value, pos = argument(pos, display, end)
+                result.append(value)
+            elif char == '\\':
+                match = command.match(expression, pos)
+                if not match:
+                    result.append(char)
+                    pos += 1
+                    continue
+                token = match.group()
+                name = token[1:]
+                pos = match.end()
+                result.append(r'\dfrac' if name == 'frac' and display else token)
+                if name in {'frac', 'dfrac', 'tfrac'}:
+                    for _ in range(2):
+                        value, pos = argument(pos, False, end)
+                        result.append(value)
+                elif name in {'genfrac', 'binom'}:
+                    # Explicit style/thickness/delimiters own the complete
+                    # fraction. Preserve its arguments verbatim, including any
+                    # nested fractions, rather than overriding the author's style.
+                    begin = pos
+                    for _ in range(6 if name == 'genfrac' else 2):
+                        while pos < end and expression[pos].isspace():
+                            pos += 1
+                        if pos < end and expression[pos] == '{':
+                            pos, closed = group_end(pos, end)
+                            if not closed:
+                                break
+                        elif pos < end:
+                            match = command.match(expression, pos)
+                            pos = match.end() if match else pos + 1
+                    result.append(expression[begin:pos])
+                elif name in literals:
+                    begin = pos
+                    while pos < end and expression[pos].isspace():
+                        pos += 1
+                    if pos < end and expression[pos] == '{':
+                        pos, _ = group_end(pos, end)
+                    result.append(expression[begin:pos])
+            else:
+                result.append(char)
+                pos += 1
+        return ''.join(result)
+
+    return walk(0, len(expression), True)
+
+
 class MathFormula(Flowable):
     """Draw MathText's glyph outlines and rules directly as PDF vector paths."""
     def __init__(self, latex, font_size=None):
@@ -296,6 +395,7 @@ class MathFormula(Flowable):
         if has_fraction_slash(latex):
             raise ValueError('Typeset division using \\frac{numerator}{denominator}; slash fractions are not accepted.')
         self.latex = latex
+        self.render_latex = display_fraction_latex(latex)
         self.font_size = font_size or TOKENS['formula_size']
         math_logger = logging.getLogger('matplotlib.mathtext')
         log_buffer = io.StringIO()
@@ -308,8 +408,8 @@ class MathFormula(Flowable):
             warnings.simplefilter('always')
             try:
                 self.parsed = MathTextParser('path').parse(
-                    '$' + latex + '$', dpi=72,
-                    prop=FontProperties(size=self.font_size, math_fontfamily='dejavusans'))
+                    '$' + self.render_latex + '$', dpi=72,
+                    prop=FontProperties(size=self.font_size, math_fontfamily='cm'))
             except (ValueError, RuntimeError) as error:
                 raise ValueError(f'Unsupported mathematical expression: {latex}. '
                                  'Rewrite it in supported MathText LaTeX or use a verified vector source crop.') from error
@@ -328,10 +428,15 @@ class MathFormula(Flowable):
         return self.width, self.height
 
     def draw(self):
-        c = self.canv
+        self.draw_at_baseline(self.canv, baseline=float(self.parsed.depth) + 3)
+
+    def draw_at_baseline(self, canvas, x=0, baseline=0, text_color=None):
+        """Draw at a text baseline; inline placement uses actual glyph bounds."""
+        c = canvas
         c.saveState()
-        c.setFillColor(C['ink'])
-        baseline = float(self.parsed.depth) + 3
+        c.translate(x, baseline)
+        c.setFillColor(text_color if text_color is not None else C['ink'])
+        baseline = 0
         for glyph in self.parsed.glyphs:
             # Matplotlib 3.8-3.10 expose five entries; newer releases add a glyph index.
             font, size, char, x, y = glyph[0], glyph[1], glyph[2], glyph[-2], glyph[-1]
@@ -462,13 +567,7 @@ def make_styles():
 
 
 def para(text, styles, kind='body'):
-    text = str(text)
-    validator = SafeMarkup()
-    validator.feed(text)
-    validator.close()
-    if validator.stack:
-        raise ValueError('Unclosed paragraph formatting tag.')
-    return Paragraph(text, styles[kind])
+    return inline_math_paragraph(str(text), styles[kind], MathFormula, SafeMarkup)
 
 
 def draw_item(c, item, x, top, width, floor=56, context='page'):

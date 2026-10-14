@@ -20,7 +20,9 @@ REQUIRED_FILES = {
     'requirements.txt', '.gitignore', '.gitattributes', 'agents/openai.yaml',
     'assets/metadata.json', 'assets/style_tokens.json',
     'assets/fonts/NotoSansSC-Regular.ttf', 'assets/fonts/OFL.txt',
-    'scripts/render_study_pdfs.py', 'scripts/build_package.py',
+    'assets/fonts/LiberationSans-Regular.ttf', 'assets/fonts/LiberationSans-Bold.ttf',
+    'licenses/DEJAVU.txt', 'licenses/LIBERATION.txt', 'licenses/BAKOMA.txt', 'examples/demo-content.json',
+    'scripts/inline_math.py', 'scripts/render_study_pdfs.py', 'scripts/build_package.py',
     'scripts/verify_package.py',
 }
 ROOT_IGNORED = {'.git', '.venv', 'tmp', 'dist'}

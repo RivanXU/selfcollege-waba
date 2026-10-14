@@ -1,73 +1,67 @@
 {
-  "authorship": "Original demo authored for selfcollege-waba; no private course content",
-  "slide_layout": "Shared renderer, fixed text origins, identical workflow, ledger and formulas",
-  "content_operator_geometry_equal": true,
+  "authorship": "Original university oscillator model, slides, practice and chart; no private course content",
+  "language_pair": [
+    "English",
+    "Simplified Chinese"
+  ],
+  "slide_layout": "Corresponding text boxes, equations and plotted data at equal panel scale",
   "pdf_pages": {
     "source-slides.pdf": 3,
     "translated-slides.pdf": 3,
     "slide-companion.pdf": 3,
-    "beginner-study-guide.pdf": 8
+    "beginner-study-guide.pdf": 11
   },
-  "rendered_pages": 17,
-  "homework": "Complete original question and all conditions on guide page 6; full solution pages 6-7",
-  "formula_rendering": "Vector glyph outlines and horizontal fraction rules; no formula bitmap",
-  "visual_review_status": "completed for all 17 final rendered PDF pages and all 3 homepage previews",
-  "visual_review_required": false,
-  "visual_review": {
-    "method": "Each final PDF page inspected individually at 110 dpi; each homepage preview inspected separately",
-    "pages_reviewed": {
-      "source-slides.pdf": [
-        1,
-        2,
-        3
-      ],
-      "translated-slides.pdf": [
-        1,
-        2,
-        3
-      ],
-      "slide-companion.pdf": [
-        1,
-        2,
-        3
-      ],
-      "beginner-study-guide.pdf": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ]
-    },
-    "findings": "No clipped text, missing symbols, collisions, orphaned steps or notes inside a slide panel were observed. Full authored question and all four solutions are present; guide references match their destinations."
+  "rendered_pages": 20,
+  "homework": "Complete original four-part question on page8; all answers on pages8-10",
+  "formula_rendering": "Vector mathematical glyphs and fraction bars; peer fraction operands retain size, scripts retain hierarchy",
+  "visual_review_status": "accepted",
+  "visual_review_required": true,
+  "preview_export": {
+    "comparison_dpi": 216,
+    "guide_dpi": 288,
+    "qa_dpi": 180,
+    "source": "Directly rendered actual desktop PDF pages; no bitmap enlargement"
   },
-  "fixture": "Original neutral cross-disciplinary study workflow and invented source-check ledger; no actual course or learner material",
-  "fraction_interpretation": "Source-check coverage only; neither a mastery score nor proof of understanding or learning quality",
-  "public_metadata": {
-    "author": "selfcollege-waba",
-    "creation_date": "D:20000101000000Z",
-    "modification_date": "D:20000101000000Z",
-    "date_purpose": "Fixed reproducible UTC metadata, not the actual authoring date",
-    "embedded_course_or_machine_metadata": false
+  "reading_baseline": "Computer PDF reading; no device-specific artifacts",
+  "review_scope": "All 20 actual source, translated, companion and guide pages inspected. Final ordinary-English spacing changes reviewed on guide page 9 and companion pages 2\u20133; the other 17 page images remained byte-identical.",
+  "reviewed_pdfs": {
+    "beginner-study-guide.pdf": "55d54a75e81103b535e387697a8e0d1797d3bef89cff3b664e8c0632568f39d0",
+    "slide-companion.pdf": "b357a9d2e8c355db55affd363e06cb64dab2482fa0afca432d45458cee1642a0",
+    "source-slides.pdf": "3b25d236c400c95d44433ee88a31c6c040091722d94e5bfa8f66ec05aa6b8c42",
+    "translated-slides.pdf": "c3d1bd7cc276fb399019608461e7d3d0db9f568ca2fe1fc799228ba7bfe53b54"
   },
-  "formula_points": {
-    "guide": 15,
-    "source_and_mirror": 21,
-    "guide_body": 11.1,
-    "slide_body": 17,
-    "vertical_padding_each_side": 3
+  "reviewed_page_images": {
+    "beginner-study-guide-01.png": "f29813bfc4f98f3a3adbcf4233065f8714eeabea5b40f7bfaa32ee780bbe8bd5",
+    "beginner-study-guide-02.png": "153a74b18feb89df15044839cad64cbc30827819eee0b3f55fc12e848911d7e6",
+    "beginner-study-guide-03.png": "665581d9254fdb4ecc50d86da7a41e6e54174bec6aab1f6cb23bb55c256b2e46",
+    "beginner-study-guide-04.png": "d7e9b70366a71cf248cd67534754491ea4a4f9e3c2d118f157dd98b7129c8f0b",
+    "beginner-study-guide-05.png": "caa8b3a84059aecaa8a531bf2c960bf3147de1a90c5bf9cf1587e5c585bdafde",
+    "beginner-study-guide-06.png": "84b9e6a495406b7d176cc42911a19c17e19627c28cc4e118a474e111a7c90611",
+    "beginner-study-guide-07.png": "91b46327d9b213ae21bff0a8654b649578d824583b6f6b73a06720ba7dc849d9",
+    "beginner-study-guide-08.png": "8f65eb5ab681639a894e7da799ed6739096c97589e8f69d0565dcbe802189ce9",
+    "beginner-study-guide-09.png": "a4d31418583ddf1af0325f7bba5ed93ef6e31353bb1b656d0e5af44771fbd870",
+    "beginner-study-guide-10.png": "eb9870de8e76cf5b7218e09ee66994d649e25a5f28110dba6d0c46fe0ecc7b30",
+    "beginner-study-guide-11.png": "01edb0377bd297696fe22b1d17f4fd2143027db2c914dc5b16dab0a543d74b54",
+    "slide-companion-1.png": "2527328c02cef51deb49be2465e3cb2573a43457ecce7cf82978c35fa5090bfc",
+    "slide-companion-2.png": "4c7804cd8aadbe4de22945dbf1ec0b2583b2b5b767780dd47d7eb566ab912635",
+    "slide-companion-3.png": "69c6d01278cd82aba40500360ce09d98ff84241edd3c94e63dd615f2993c92e3",
+    "source-slides-1.png": "0152da03c4b6f963fe7a6abe51fd5a73b46cf8f9502d6f7911a1972b21178a2d",
+    "source-slides-2.png": "a55cbe4340c54dee0531dd101881ce69324301f1990e77ae9cbabae814b63784",
+    "source-slides-3.png": "36c9f8387582a52e9d1ac2ecb91906faa523673485df2229ee6f5e28f075ad13",
+    "translated-slides-1.png": "53cec84d09be531253e5e8eb7d1e0d2c839c74d705c7bdde7cb38e52de1a08d6",
+    "translated-slides-2.png": "d752461cbba2d794d22b0cf36fc332f80f3fb28d581ae05fb05bf24c359e147d",
+    "translated-slides-3.png": "f9bb3db7694497d13be2ed952bbd32f7e95bcbcef01746bee90759f6c2c0eeac"
   },
-  "review_scope": "Original 3-page academic-English source, its 3-page same-language mirror, the complete 3-page paired companion and the complete 8-page study guide. This fixture does not establish all-course or all-language success.",
-  "sha256": {
-    "examples/beginner-study-guide.pdf": "4bd2ed09eb78d4389f902621be7933525ee6b846571c04b8b599d202276c81ff",
-    "examples/previews/comparison.png": "406f300662c1eb381709eb616e4c13ecfcaa20b99150bb02a8a482bed9b15e10",
-    "examples/previews/explanation.png": "fd79d6dedf2653a88dc8630ea461f6aed57cab2e92f076156e9667843bab4e52",
-    "examples/previews/practice.png": "71fb10ee229226c311dfeaeeb73f06efe22738d3533afae85ab33965fff14b0a",
-    "examples/slide-companion.pdf": "4ed840574130acc448c60990c3776066cf8eee408bd1f8fe9e36d7d658cd2614",
-    "examples/source-slides.pdf": "834641fc86e847bb29e65af3cdac866a38a102707429e8c5b119064f05fe60d2",
-    "examples/translated-slides.pdf": "468bf489005af6706cf9468a9e4ba888e7d787011b91f7c50ac9ed3977295c1a"
-  }
+  "mathematical_style": {
+    "font_family": "BaKoMa Computer Modern from Matplotlib",
+    "guide_body_pt": 11.5,
+    "guide_display_pt": 13.2,
+    "inline_size": "surrounding paragraph font size",
+    "source_body_pt": 18,
+    "source_display_pt": 21,
+    "fraction_hierarchy": "Main operands match peer glyph size; true scripts and nested fractions retain smaller sizes",
+    "inline_geometry": "Actual vector glyph and rule bounds; 0.08-em side gaps; split and reflow checked"
+  },
+  "preview_limits": "Full paired slides and bottom notes shrink together in a README preview. Open the linked full-resolution image or PDF to inspect small annotations.",
+  "validation_scope": "45 distinct renderer, inline, example-rollback and packaging cases passed; skill creator validation passed. Original oscillator calculations independently checked. These checks do not establish every subject or language."
 }

@@ -155,10 +155,63 @@ class RendererTests(unittest.TestCase):
         with self.assertRaisesRegex(renderer.LayoutError, 'Font size is preserved'):
             formula.wrap(40, 500)
 
+    def test_display_fraction_operands_match_peer_variables_and_keep_scripts(self):
+        formula = renderer.MathFormula(r'q=\frac{C_i}{N^2}', 15)
+        glyphs = [(chr(g[2]), float(g[1]), g[0].family_name) for g in formula.parsed.glyphs]
+        for char in ('q', 'C', 'N'):
+            self.assertEqual(next(size for letter, size, _ in glyphs if letter == char), 15)
+        for char in ('i', '2'):
+            self.assertEqual(next(size for letter, size, _ in glyphs if letter == char), 10.5)
+        self.assertEqual({family for _, _, family in glyphs}, {'cmmi10', 'cmr10'})
+        self.assertEqual(formula.latex, r'q=\frac{C_i}{N^2}')
+        self.assertEqual(formula.render_latex, r'q=\dfrac{C_i}{N^2}')
+
+    def test_fraction_styles_respect_nesting_scripts_and_explicit_choice(self):
+        source = r'{\frac{\frac{a}{b}}{c}}+x_{\frac{i}{j}}+\dfrac{u}{v}'
+        expected = r'{\dfrac{\frac{a}{b}}{c}}+x_{\frac{i}{j}}+\dfrac{u}{v}'
+        self.assertEqual(renderer.display_fraction_latex(source), expected)
+        formula = renderer.MathFormula(source, 15)
+        sizes = {chr(g[2]): float(g[1]) for g in formula.parsed.glyphs}
+        self.assertEqual(sizes['c'], 15)
+        self.assertEqual(sizes['a'], 10.5)
+        self.assertLess(sizes['i'], sizes['a'])
+        self.assertEqual(sizes['u'], 15)
+
+    def test_malformed_groups_are_not_repaired_and_explicit_genfrac_is_preserved(self):
+        malformed = r'{a{b}'
+        self.assertEqual(renderer.display_fraction_latex(malformed), malformed)
+        with self.assertRaisesRegex(ValueError, 'Unsupported mathematical'):
+            renderer.MathFormula(malformed)
+        explicit = r'\genfrac{}{}{0.4}{1}{\frac{a}{b}}{c}'
+        self.assertEqual(renderer.display_fraction_latex(explicit), explicit)
+        formula = renderer.MathFormula(explicit, 15)
+        sizes = {chr(g[2]): float(g[1]) for g in formula.parsed.glyphs}
+        self.assertLess(sizes['a'], sizes['c'])
+        self.assertEqual(sizes['c'], 10.5)
+
+    def test_greek_sum_scripts_and_display_vectors_stay_within_vertical_bounds(self):
+        formula = renderer.MathFormula(r'\sum_{i=1}^{N}\alpha_i^2=\frac{\beta}{N_0}', 15)
+        glyphs = formula.parsed.glyphs
+        self.assertEqual(next(float(g[1]) for g in glyphs if g[0].get_glyph_name(g[0].get_char_index(g[2])) == 'alpha'), 15)
+        self.assertEqual(next(float(g[1]) for g in glyphs if g[0].get_glyph_name(g[0].get_char_index(g[2])) == 'beta'), 15)
+        self.assertEqual(sorted(float(g[1]) for g in glyphs if g[2] == ord('N')), [10.5, 15])
+        self.assertTrue(all(g[0].family_name in {'cmmi10', 'cmr10', 'cmex10', 'cmsy10'} for g in glyphs))
+        baseline = float(formula.parsed.depth) + 3
+        for g in glyphs:
+            font, size, char, y = g[0], g[1], g[2], g[-1]
+            font.set_size(size, 72)
+            font.load_char(char, flags=renderer.LoadFlags.NO_HINTING)
+            vertices, _ = font.get_path()
+            if len(vertices):
+                self.assertGreaterEqual(baseline + y + min(vertices[:, 1]), -0.05)
+                self.assertLessEqual(baseline + y + max(vertices[:, 1]), formula.height + 0.05)
+
     def test_literal_code_units_and_source_slashes_are_preserved(self):
         for latex in (r'v=3\,\mathrm{m/s}', r'\mathtt{a/b}', r'\text{path/to/file}'):
             formula = renderer.MathFormula(latex)
-            self.assertIn(ord('/'), [glyph[2] for glyph in formula.parsed.glyphs])
+            self.assertTrue(any(glyph[0].get_glyph_name(
+                glyph[0].get_char_index(glyph[2])) == 'slash'
+                for glyph in formula.parsed.glyphs))
         for latex in ('dy/dx', r'\mathrm{d}y/\mathrm{d}x', r'\frac{a/b}{c}'):
             with self.assertRaisesRegex(ValueError, 'slash fractions'):
                 renderer.MathFormula(latex)

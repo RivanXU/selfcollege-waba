@@ -13,6 +13,12 @@ Turn compressed course materials into a lesson a learner can follow and apply. T
 
 Read the request and accessible records for this course. Reuse established scope, language, and preferences. Ask only for missing information that changes which materials or task to use; start with available materials when possible. Use the learner's language, retaining original technical terms on first introduction. English package documentation does not require English teaching.
 
+Keep detail and layout focused on the learning question. The learner's current
+request and preferences take priority over tool defaults. A preferred conversational
+explanation style does not cancel requested PDFs or change the established
+lecture-pack scope. Keep formulas proportionate and close to their explanation;
+more artifacts, larger equations or extra charts do not improve learning by themselves.
+
 | Request | Deliverable |
 | --- | --- |
 | Study a lecture or create its study pack | A faithful slide companion and a beginner study guide, normally two PDFs. |
@@ -46,16 +52,37 @@ Open with the lecture's question and connected module route. Teach each module a
 
 Supply concepts missing from the slides when needed to understand the current step. Label them as tutor foundation supplements, not instructor statements. Standard algebra, units, graph reading, definitions, and reasoning rules can be explained directly. Verify unfamiliar or disputed external facts against reliable sources. Separate uncertain course-specific meanings from known general foundations.
 
+Choose foundations relative to this course and the learner's demonstrated needs.
+A university lesson need not reteach elementary fraction arithmetic at every
+step. Focus explanations on the new concept, model choice and consequential
+transformation; show routine substitutions and results concisely unless the
+learner asks for those operations or reveals a gap.
+
 For each important equation:
 
 - Preserve source notation and structure. Render actual mathematics: stacked fractions, proper exponents/subscripts, roots, integrals, and matrices. Use a capable math engine; fraction bars replace slash shorthand in displayed fractions. Verify the rendered expression.
 - Explain every new symbol **beside or immediately below its first formula**, including role, meaning, index, units/domain, and fixed/variable status. State what is carried over, newly introduced, or renamed. Distinguish function application, multiplication, powers, labels, and time indices.
-- Give each transformation its own readable step and explain the definition, substitution, algebra rule, assumption, or theorem that permits it. Show intermediate expressions and connect them to the previous result. Final formulas alone are not a derivation.
+- Give each consequential transformation its own readable step and explain the definition, substitution, algebra rule, assumption, or theorem that permits it. Show intermediate expressions and connect them to the previous result. Final formulas alone are not a derivation.
 - Separate general relation, chosen function/example, given values, substitution, arithmetic, result, and interpretation. Explain why the relation applies; identify changed assumptions and whether an example resets to baseline or continues the previous one. Check units, domains, signs, boundaries, and rounding where meaningful.
 
 A useful explanation also states **what the current result does not yet determine** and which constraint or next idea resolves that gap. If equal numerical values represent different quantities, distinguish their definitions and explain the conditions causing equality. If notation is reused with a new meaning, preserve the source and introduce a clearly labeled teaching alias.
 
+Short conditions, definitions and already calculated values can stay in the
+nearby explanation, at its body size. Typeset mathematical runs there with true
+subscripts, powers and fractions, consistent with the displayed notation. Leave
+small gaps at Chinese and English boundaries and normal mathematical operator
+spacing; increase line height only where actual glyphs require it. Give important
+derivations their own justified steps; do not
+turn every brief relation into an isolated formula panel. Preserve all reasoning
+and question subparts when simplifying the page layout.
+
 For non-mathematical courses apply the same connected standard to claims, evidence, inference, counterarguments, code state, laboratory steps, or design decisions. Do not invent formulas to fill a template.
+
+Keep useful source figures and explain them. Add a new chart only if its
+relationship, comparison, trend or mechanism helps resolve the learning question,
+or the learner explicitly requests it. Simple small datasets are usually clearer
+as a sentence or light table. State what an added chart reveals, keep its labels
+readable, and give it enough space. Do not turn every number into a figure.
 
 Embed supplied homework questions with all conditions and subparts where their required ideas become available. Show the question-to-concept map and teach solutions step by step, explaining method choice and each step's connection to the lesson. Cross-module questions follow the last required module with explicit backward links. Keep official answers, tutor solutions, and original practice distinct. Respect the learner's chosen hint/solution mode and stated assignment rules.
 

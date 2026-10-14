@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 # Required Notice: Copyright (c) 2026 RivanXU.
 # Required Notice: selfcollege-waba by RivanXU.
-reportlab
+reportlab>=4.4.9
 pypdf
-matplotlib>=3.8
+matplotlib>=3.10
 Pillow>=10.0

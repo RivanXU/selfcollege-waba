@@ -4,6 +4,11 @@
 
 ## Read, map, then teach
 
+Keep explanation density, equations and visuals focused on the learning task.
+A conversational teaching style does not change requested PDFs or the established
+lecture-pack deliverables. Place a moderate-size equation close to its reasoning
+and symbols; avoid oversized isolated formula panels or visual feature quotas.
+
 Inspect the entire requested lecture before drafting individual explanations. Read text and rendered pages together: OCR commonly loses superscripts, minus signs, Greek letters, table boundaries, or plot labels. Record the file/version, physical page, topic, new assumptions, notation, examples, figures, transcript matches, homework links, and planned guide module. For a lecture pack or revision, copy the [acceptance ledger template](acceptance-ledger-template.md) into the course workspace and maintain its actual page/question mappings through delivery. Preserve all source pages in the companion, including repeats.
 
 State the lecture's central question in ordinary language. Identify the path by which its slides answer it. Group consecutive pages by one meaningful question or reasoning task; do not isolate every formula or silently reorder the course by a dependency map. A module spanning several slides teaches their connected argument and accounts for each slide's additions.
@@ -15,6 +20,12 @@ Before moving on, name the previous result and the next unanswered question. For
 Start with the problem the module resolves. Develop connected paragraphs, interleaving expressions, diagrams, and checks. Explain a new term in everyday language before relying on its formal definition; keep its original technical term beside the translation. Distinguish definitions, modeling assumptions, logical consequences, and empirical observations.
 
 Explain prerequisites the slides assume: what a ratio measures, why units cancel, what differentiation holds fixed, how a graph represents a relation, what evidence supports a claim, or how program state changes. Mark these as **Tutor foundation supplement**. Absence from a PPT is a reason to explain an essential foundation, not evidence that a standard rule is uncertain. Keep the supplement relevant to the current bottleneck.
+
+Set the starting point for the subject and learner, rather than restarting from
+elementary arithmetic. Explain a prerequisite when it blocks the current idea;
+otherwise keep routine arithmetic brief and spend detail on modeling, assumptions,
+new notation, important transformations and interpretation. Expand a familiar
+operation when the learner requests it or their attempt shows that specific gap.
 
 For familiar mathematical rules show why they apply and their conditions. Verify specialized, current, contested, or unfamiliar facts against reliable primary sources and cite separately. If resources are unavailable, derive what can be established locally and identify the exact unresolved dependency. A symbol's mathematical role does not establish an undefined course-specific meaning.
 
@@ -46,6 +57,13 @@ Follow the relevant source sequence. Avoid numerical exercises in argument-based
 ## Figures and tables
 
 Explain axes, units, legends, labels, regions, arrows, conditions, and reading order. Connect the figure to its neighboring claim/equation: what does it add, and what can it establish? Distinguish movement along a curve from changes to its defining relation. Preserve figures in the companion; accurate guide redraws retain source values and locators.
+
+Distinguish a supplied source figure from a newly added visualization. Preserve
+the useful source figure when explaining it. Before adding a chart, identify the
+specific relationship, trend, comparison or mechanism it makes easier to learn.
+If a few numbers are already obvious in words or a small table, use that simpler
+presentation. Leave space around a justified chart and keep its labels readable;
+do not crowd it beside formulas to advertise capabilities.
 
 ## Provenance
 

@@ -3,6 +3,6 @@
 interface:
   display_name: "selfcollege-waba"
   short_description: "Connected course lessons, faithful slides, and guided homework"
-  default_prompt: "Use $selfcollege-waba to teach my course materials as connected modules, explain each derivation, and integrate homework into a study guide with a faithful slide companion."
+  default_prompt: "Use $selfcollege-waba to teach my course materials as connected modules, explain each derivation, and integrate homework into a study guide with a faithful slide companion. Keep equations proportionate and add charts only when they serve my learning task."
 policy:
   allow_implicit_invocation: true

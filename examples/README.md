@@ -1,38 +1,46 @@
-# Original teaching example
+# Original neutral study example
 
-This public example teaches constant-acceleration motion from its assumptions to
-a complete assignment solution. All slides, questions, explanations and figures
-were independently authored for this repository. They contain no private course
-materials, classroom recordings, student answers or assessment content.
+This public example demonstrates a connected study workflow: read the complete
+source, connect consecutive ideas, explain the reasoning, and use it in practice.
+Its invented source log provides a small mathematical example: checked items as
+a fraction of listed items. The fraction describes recorded source-check coverage;
+it is not a score for mastery, understanding, teaching quality or learning outcomes.
 
-The two slide decks deliberately use **academic English and plain English** so
-every public demonstration remains English. This demonstrates the same layout
-contract used for translation between languages: the title, text origins,
-equations, graph coordinates and other visual elements have the same geometry.
-The mirror changes wording; it does not add lesson material inside the slide.
-For a real course, the two decks can use any supported source and target
-languages, with a font covering both languages and readable original-size text.
+All slides, questions, text and illustrations were independently authored for this
+repository. The example uses no real course, institution, lecturer, student record,
+classroom recording, assignment or private source material. It presents generic
+study actions that can be adapted to arguments, procedures, code and calculations.
+
+The two decks deliberately use **academic English and plain English** so every
+public demonstration remains English. This shows the same layout contract used
+for translation: titles, text origins, workflow boxes, ledger cells, fractions and
+other visual elements share their geometry. The mirror changes wording; added
+teaching material appears only in the band below both panels. It is a same-language
+adaptation example, not evidence of a cross-language translation. Real language
+pairs require supported fonts, readable text and translation review.
 
 | File | Purpose |
 | --- | --- |
-| [source-slides.pdf](source-slides.pdf) | Three original slides in academic English. |
-| [translated-slides.pdf](translated-slides.pdf) | The corresponding plain-English mirror with identical slide geometry. |
-| [slide-companion.pdf](slide-companion.pdf) | Equal source and mirror viewports, followed by one full-width annotation band. |
-| [beginner-study-guide.pdf](beginner-study-guide.pdf) | Eight spacious teaching pages: prerequisite definitions, nearby symbol meanings, justified derivation, integrated homework and transfer practice. |
-| [demo-spec.json](demo-spec.json) | Reproducible companion configuration, vocabulary and bottom annotations. |
-| [validation.json](validation.json) | Page counts, authorship declaration and review status. |
+| [source-slides.pdf](source-slides.pdf) | Three original neutral source slides in academic English. |
+| [translated-slides.pdf](translated-slides.pdf) | The corresponding plain-English mirror with the same slide geometry. |
+| [slide-companion.pdf](slide-companion.pdf) | Equal source and mirror viewports, followed by a full-width annotation band. |
+| [beginner-study-guide.pdf](beginner-study-guide.pdf) | Eight connected pages: workflow, foundations, nearby symbol definitions, justified fraction steps, complete practice and interpretation. |
+| [demo-spec.json](demo-spec.json) | Portable companion configuration, vocabulary, bottom notes and accurate guide-page references. |
+| [validation.json](validation.json) | Actual page counts, authorship, metadata treatment and visual review status. |
 
-The guide first builds the meaning of acceleration, then derives velocity,
-explains graph area and average velocity, and derives displacement. Its exact
-authored homework question appears on page 6. The solution on pages 6-7 shows
-how the lesson's relations answer each part and checks the result independently.
-Page 8 uses new numbers to test transfer and explains the model's limits.
+The guide follows the three source slides in order. It explains the workflow, then
+defines the checked fraction and derives its relationship to the pending fraction.
+The complete original practice question, all conditions and all four subparts
+appear on page 6; pages 6-7 solve them using the preceding knowledge blocks. Page 8
+compares two fresh synthetic logs and explains why a count and a fraction answer
+different questions. Short cross-disciplinary examples on page 5 connect the
+workflow to arguments, procedures, programming and calculations.
 
-![Source and mirror with bottom annotations](previews/comparison.png)
+![Matched neutral source and mirror, with all added notes below](previews/comparison.png)
 
-![A derivation with mathematical fractions and reasons](previews/explanation.png)
+![A connected fraction derivation with symbols and one reason for each step](previews/explanation.png)
 
-![Homework calculation, graph check and interpretation](previews/practice.png)
+![The complete original practice question, its prerequisite links and the start of its solution](previews/practice.png)
 
 To rebuild the files, install the repository's requirements and Poppler, then run:
 
@@ -40,8 +48,10 @@ To rebuild the files, install the repository's requirements and Poppler, then ru
 python scripts/build_examples.py
 ```
 
-The builder renders every PDF page and puts the complete visual review set in
-`tmp/example-qa/`, which is not part of the published package. Mathematical
-fractions are typeset with horizontal numerator/denominator bars. Human review
-is still required before publishing a regenerated output; a successful render
-does not establish teaching quality or layout fidelity by itself.
+The builder stages and renders every PDF before replacing the maintained bundle.
+It puts the complete visual review set in `tmp/example-qa/`, outside the published
+package. Fractions use horizontal numerator/denominator bars and vector glyphs.
+Public PDF metadata uses only the product name and fixed UTC dates. Human review
+is still required before publishing a regenerated output: successful rendering
+and equal drawing coordinates alone do not establish teaching quality or content
+fidelity. A fresh build resets the recorded review status to pending.

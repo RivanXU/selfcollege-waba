@@ -16,11 +16,11 @@ The skill works with quantitative courses, humanities, programming, and practica
 
 ## See the output
 
-The examples use an original constant-acceleration lesson. No private classroom materials or learner records are included. Both slide panels are English: the original uses academic wording and the matching adaptation uses plain English. This demonstrates shared geometry and readable adaptation; it is not presented as a cross-language translation. Actual course companions use the learner's chosen language pair and require translation review.
+The examples use an original neutral study workflow: read, connect, explain and practice. Synthetic source-check counts demonstrate fractions and their interpretation; they do not measure mastery or learning quality. No real course materials, institutional details or learner records are included. Both slide panels are English: the source uses academic wording and the matching adaptation uses plain English. This shows shared geometry and readable adaptation; it is a same-language example. Actual course companions use the learner's chosen language pair and require translation review.
 
 ### Matching slides, with notes below
 
-[![Academic and plain-English slides in equal panels, with aligned graphs and all added notes below](examples/previews/comparison.png)](examples/previews/comparison.png)
+[![Neutral academic and plain-English slides in equal panels, with matching workflow and fraction layouts and all added notes below](examples/previews/comparison.png)](examples/previews/comparison.png)
 
 **[Open the slide companion](examples/slide-companion.pdf)** · [Original slides](examples/source-slides.pdf) · [Plain-English slides](examples/translated-slides.pdf)
 
@@ -36,7 +36,7 @@ The examples use an original constant-acceleration lesson. No private classroom 
 
 **[Open the beginner study guide](examples/beginner-study-guide.pdf)**
 
-Every public example is authored for this project. Guide length follows the teaching content and readability; it is not forced to match the slide count.
+Every public slide, illustration and question is independently authored for this project. The eight-page guide expands the three-slide workflow with symbol definitions, fraction steps, an entire four-part practice question and a fresh comparison task. Guide length follows the teaching content and readability; it is not forced to match the slide count. These examples show output behavior, without claiming that every subject or language has been tested.
 
 ## What it does
 
@@ -117,6 +117,6 @@ Source and translated content, classroom evidence, tutor foundations, derivation
 
 Copyright (c) 2026 RivanXU. Original project files use [PolyForm Noncommercial 1.0.0](LICENSE). Noncommercial use, modification, and sharing are subject to that license and the required [NOTICE](NOTICE). Commercial use outside its permissions needs separate authorization. This is a source-available project with noncommercial conditions; third-party components retain their own licenses as described in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Course materials retain their original rights. Use original or appropriately licensed materials in public demonstrations. Modified copies do not imply author endorsement.
+Course materials retain their original rights and stay in private course workspaces. Public demonstrations use independently authored neutral fixtures, never real course slides, guides, recordings or disguised derivatives. Modified copies do not imply author endorsement.
 
-Report reproducible issues through [GitHub Issues](https://github.com/RivanXU/selfcollege-waba/issues), with the requested outcome and a shareable, anonymized example. Licensing questions can use the author's public [GitHub profile](https://github.com/RivanXU).
+Report reproducible issues through [GitHub Issues](https://github.com/RivanXU/selfcollege-waba/issues), with the requested outcome and a minimal independently authored neutral reproduction. Do not attach private course files, screenshots, links, identifiers or metadata. Licensing questions can use the author's public [GitHub profile](https://github.com/RivanXU).

@@ -1,6 +1,6 @@
 {
   "authorship": "Original demo authored for selfcollege-waba; no private course content",
-  "slide_layout": "Shared renderer, fixed text origins, identical graphs and formulas",
+  "slide_layout": "Shared renderer, fixed text origins, identical workflow, ledger and formulas",
   "content_operator_geometry_equal": true,
   "pdf_pages": {
     "source-slides.pdf": 3,
@@ -9,16 +9,65 @@
     "beginner-study-guide.pdf": 8
   },
   "rendered_pages": 17,
-  "homework": "Exact authored question embedded on study-guide page 6; solution pages 6-7",
+  "homework": "Complete original question and all conditions on guide page 6; full solution pages 6-7",
   "formula_rendering": "Vector glyph outlines and horizontal fraction rules; no formula bitmap",
-  "visual_review_status": "completed for this build",
+  "visual_review_status": "completed for all 17 final rendered PDF pages and all 3 homepage previews",
   "visual_review_required": false,
-  "visual_review_scope": "All 17 current pages rendered and inspected; guide formula pages 2, 3, 4, 5, 7 and 8 checked at 110 dpi for reading detail. Both slide copies and all 3 paired pages checked; source and mirror geometry equal. This is an authored English demonstration, not an authentic lecture or cross-language proof.",
-  "formula_size_points": {
-    "guide": 15,
-    "slide": 21,
-    "guide_body": 11.1,
-    "slide_body": 17
+  "visual_review": {
+    "method": "Each final PDF page inspected individually at 110 dpi; each homepage preview inspected separately",
+    "pages_reviewed": {
+      "source-slides.pdf": [
+        1,
+        2,
+        3
+      ],
+      "translated-slides.pdf": [
+        1,
+        2,
+        3
+      ],
+      "slide-companion.pdf": [
+        1,
+        2,
+        3
+      ],
+      "beginner-study-guide.pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "findings": "No clipped text, missing symbols, collisions, orphaned steps or notes inside a slide panel were observed. Full authored question and all four solutions are present; guide references match their destinations."
   },
-  "formula_vertical_padding_points": 3
+  "fixture": "Original neutral cross-disciplinary study workflow and invented source-check ledger; no actual course or learner material",
+  "fraction_interpretation": "Source-check coverage only; neither a mastery score nor proof of understanding or learning quality",
+  "public_metadata": {
+    "author": "selfcollege-waba",
+    "creation_date": "D:20000101000000Z",
+    "modification_date": "D:20000101000000Z",
+    "date_purpose": "Fixed reproducible UTC metadata, not the actual authoring date",
+    "embedded_course_or_machine_metadata": false
+  },
+  "formula_points": {
+    "guide": 15,
+    "source_and_mirror": 21,
+    "guide_body": 11.1,
+    "slide_body": 17,
+    "vertical_padding_each_side": 3
+  },
+  "review_scope": "Original 3-page academic-English source, its 3-page same-language mirror, the complete 3-page paired companion and the complete 8-page study guide. This fixture does not establish all-course or all-language success.",
+  "sha256": {
+    "examples/beginner-study-guide.pdf": "4bd2ed09eb78d4389f902621be7933525ee6b846571c04b8b599d202276c81ff",
+    "examples/previews/comparison.png": "406f300662c1eb381709eb616e4c13ecfcaa20b99150bb02a8a482bed9b15e10",
+    "examples/previews/explanation.png": "fd79d6dedf2653a88dc8630ea461f6aed57cab2e92f076156e9667843bab4e52",
+    "examples/previews/practice.png": "71fb10ee229226c311dfeaeeb73f06efe22738d3533afae85ab33965fff14b0a",
+    "examples/slide-companion.pdf": "4ed840574130acc448c60990c3776066cf8eee408bd1f8fe9e36d7d658cd2614",
+    "examples/source-slides.pdf": "834641fc86e847bb29e65af3cdac866a38a102707429e8c5b119064f05fe60d2",
+    "examples/translated-slides.pdf": "468bf489005af6706cf9468a9e4ba888e7d787011b91f7c50ac9ed3977295c1a"
+  }
 }

@@ -1,8 +1,8 @@
 {
-  "course_code": "PHYSICS DEMO",
-  "course_name": "Constant acceleration - original public lesson",
-  "lecture": "From a model to a solved assignment",
-  "file_stem": "motion",
+  "course_code": "STUDY WORKFLOW",
+  "course_name": "Connected study workflow - original neutral demonstration",
+  "lecture": "Read, connect, explain and practice",
+  "file_stem": "study-workflow",
   "source_pdf": "examples/source-slides.pdf",
   "translated_pdf": "examples/translated-slides.pdf",
   "bilingual_layout": {
@@ -16,103 +16,103 @@
     "terms_heading": "Vocabulary",
     "guide_name": "study-guide",
     "bilingual_name": "slide-companion",
-    "source_footer": "Original authored demo / slide {page}",
+    "source_footer": "Original neutral demo / slide {page}",
     "guide_reference_footer": "Study-guide pages {pages}"
   },
   "bilingual": [
     {
       "source_page": 1,
-      "title": "From acceleration to velocity",
-      "guide_pages": "1-2, 6",
+      "title": "Build a connected study route",
+      "guide_pages": "1-2, 5",
       "terms": [
         [
-          "Initial",
-          "At the start; v0 is velocity at time zero."
+          "Knowledge block",
+          "Consecutive source ideas answering one shared question."
         ],
         [
-          "Rate",
-          "Change per unit of time."
+          "Transition",
+          "The connection from a previous conclusion to the next question."
         ],
         [
-          "Slope",
-          "Change in graph height divided by change in time."
+          "Practice",
+          "A task that uses the ideas just explained."
         ]
       ],
       "notes": [
         {
           "label": "Prerequisite bridge",
-          "text": "A subscript identifies a particular value. The 0 in v0 labels the start; it does not multiply v. Acceleration of 3 m/s2 adds 3 m/s of velocity each second."
+          "text": "Read the whole source before teaching its parts. A formula, argument, code trace or procedure belongs in the knowledge block it helps explain. Keep the source order and make each transition explicit."
         }
       ],
       "homework": [
         {
-          "label": "Homework connection",
-          "text": "For part (a), first calculate the gain a t = 12 m/s, then add the starting 2 m/s. The endpoint 14 m/s also feeds the graph check in part (c).",
-          "source": "Full authored question and guided solution: study-guide pages 6-7."
+          "label": "Practice connection",
+          "text": "The complete original practice question is on study-guide page 6. Its final part asks you to distinguish a source-check record from evidence about reasoning and to choose one useful next action.",
+          "source": "Original neutral fixture; full question page 6, solution pages 6-7."
         }
       ]
     },
     {
       "source_page": 2,
-      "title": "Displacement is the area under velocity",
-      "guide_pages": "3, 7",
+      "title": "Check what the source log covers",
+      "guide_pages": "1, 3, 6-7",
       "terms": [
         [
-          "Displacement",
-          "Final position minus starting position; it is signed."
+          "Numerator",
+          "The top number: checked items C."
         ],
         [
-          "Average velocity",
-          "The constant velocity producing the same displacement."
+          "Denominator",
+          "The bottom number: all listed items N, which must be positive."
         ],
         [
-          "Trapezoid",
-          "A four-sided region with one pair of parallel sides."
+          "Percentage",
+          "A fraction expressed as an amount per hundred."
         ]
       ],
       "notes": [
         {
-          "label": "Why this relation follows",
-          "text": "Velocity times a short time interval gives a small displacement. Add these strips to get the area. Since the velocity line is straight, its average height is halfway between the endpoint heights."
+          "label": "What the symbols and counts mean",
+          "text": "N is the distinct listed count; C is the checked count; q is the checked fraction. The pictured log is synthetic. Its 6 of 8 checked items give 75% source-check coverage, not a score for understanding or learning quality."
         }
       ],
       "homework": [
         {
-          "label": "Homework connection",
-          "text": "Part (c) splits the shaded region into an 8 m rectangle and a 24 m triangle. Their sum checks part (b). Distance equals forward displacement here because the cart does not reverse.",
-          "source": "Original authored graph; study-guide pages 3 and 7."
+          "label": "Practice connection",
+          "text": "Part (a) resets the example to N = 10 and C = 7. Use the same definition, substitute the new values, then convert the resulting share to a percentage. Do not carry over 6 and 8.",
+          "source": "Definition page 3; complete question and guided solution pages 6-7."
         }
       ]
     },
     {
       "source_page": 3,
-      "title": "Build the constant-acceleration equation",
+      "title": "Use the record to choose a next step",
       "guide_pages": "4-5, 7-8",
       "terms": [
         [
-          "Substitution",
-          "Replace a quantity with an expression equal to it."
+          "Pending",
+          "A listed item still awaiting its source check; count U."
         ],
         [
-          "Distribute",
-          "Multiply every term inside a sum by the outside factor."
+          "Complement",
+          "What remains of a whole after one part is removed."
         ],
         [
-          "Dimension",
-          "The physical kind of a quantity, such as length or time."
+          "Subscript",
+          "A label identifying a particular value, such as log A or B."
         ]
       ],
       "notes": [
         {
-          "label": "The new notation and the one-half",
-          "text": "Delta x is change in position; t squared is time multiplied by itself. The one-half comes from the triangular extra area, not from an arbitrary instruction to divide the final answer."
+          "label": "Connect the relation to its conditions",
+          "text": "The new symbol r is the pending fraction, U divided by N. The two groups cover the same nonempty list without overlap, so q + r = 1. Page 4 derives the connection one step at a time. A checked item can still need explanation or practice."
         }
       ],
       "homework": [
         {
-          "label": "Homework connection",
-          "text": "Part (b) separates starting-motion displacement, 8 m, from acceleration's extra 24 m. Both terms must have units of metres. The new practice on page 8 checks whether the reasoning transfers.",
-          "source": "All lesson text and questions are independently authored for this repository."
+          "label": "Practice connection",
+          "text": "Parts (b)-(c) find the pending count and fraction, then check that both shares total one. Part (d) interprets the result. Page 8 compares two fresh logs and shows why larger counts and larger fractions answer different questions.",
+          "source": "All public slides, illustrations and questions are independently authored neutral fixtures."
         }
       ]
     }

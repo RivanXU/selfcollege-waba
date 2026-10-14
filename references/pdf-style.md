@@ -81,11 +81,11 @@ A paired companion requires `source_pdf` and `translated_pdf`. Both PDFs must co
 
 The example's transcript entry is schema illustration only. Omit that field when no recording or transcript was supplied. The example assumes a one-page source; add one `bilingual` entry per actual source page. Either `guide` or `bilingual` can be omitted to produce only the other artifact.
 
-`title` is the preferred page heading. Legacy `title_zh` and `title_en` are accepted as heading fallbacks; they do not reconstruct a translated slide. `terms` contains pairs of term and explanation. `notes`, `transcript` and `homework` contain entries with `label`, `text` and optional `source`. All are rendered only in the bottom band. Long notes must move to a cited guide page or receive more physical page space.
+`title` is the preferred page heading. `title_zh` and `title_en` are accepted as heading aliases; they do not reconstruct a translated slide. `terms` contains pairs of term and explanation. `notes`, `transcript` and `homework` contain entries with `label`, `text` and optional `source`. All are rendered only in the bottom band. Long notes must move to a cited guide page or receive more physical page space.
 
 ## Mathematics with genuine fraction bars
 
-A formula block requires `latex` and `reason`. Use `\frac{numerator}{denominator}` for division, braces for multi-character scripts and a separate block for each derivation step. The renderer rejects the old `formula.text` field and slash fractions. It draws supported MathText LaTeX as PDF vector outlines, including actual fraction rules, superscripts and subscripts. Text font failures do not permit deleting symbols.
+A formula block requires `latex` and `reason`. Use `\frac{numerator}{denominator}` for division, braces for multi-character scripts and a separate block for each derivation step. The renderer does not accept a `formula.text` field and slash fractions. It draws supported MathText LaTeX as PDF vector outlines, including actual fraction rules, superscripts and subscripts. Text font failures do not permit deleting symbols.
 
 The fraction rule applies to displayed mathematical division such as `a/b` or `dy/dx`. Preserve actual programming operators, file paths, unit labels and structural slash notation from the source. Ordinary prose/code outside formula blocks is untouched. Inside a formula, mark a literal unit/code/text region explicitly, for example `\mathrm{m/s}`, `\mathtt{a/b}` or `\text{path/to/file}`. A structural slash can be written as `\text{/}`. These literal regions retain their slash; they must not be used to disguise a displayed fraction.
 

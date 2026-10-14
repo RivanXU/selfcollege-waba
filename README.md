@@ -1,16 +1,16 @@
 <div align="center">
 
-# Selfcollege Waba
+# selfcollege-waba
 
 ### Follow the lecture's reasoning. Learn to solve the next problem.
 
 A university learning skill for connected explanations, faithful slide companions, and homework taught inside the lesson.
 
-**[Download the current source package](https://github.com/RivanXU/selfcollege-waba/archive/refs/heads/main.zip)** · **[Explore the examples](#see-the-output)** · **[Get started](#get-started)**
+**[Download the skill](https://github.com/RivanXU/selfcollege-waba/releases/latest/download/selfcollege-waba.zip)** · **[Explore the examples](#see-the-output)** · **[Get started](#get-started)**
 
 </div>
 
-Slides compress an argument into a few lines. Selfcollege Waba expands that argument into a lesson: what the previous idea established, why the next idea is needed, what each symbol means, and how the reasoning becomes a solution.
+Slides compress an argument into a few lines. selfcollege-waba expands that argument into a lesson: what the previous idea established, why the next idea is needed, what each symbol means, and how the reasoning becomes a solution.
 
 The skill works with quantitative courses, humanities, programming, and practical coursework. It follows the source lecture's order while grouping consecutive slides into coherent knowledge modules. Teaching language, starting knowledge, and output format follow the learner's needs. This repository, its filenames, and its public demonstrations are English.
 
@@ -57,7 +57,7 @@ The normal lecture pack contains two PDFs: a **slide companion** with one page p
 
 ### Install locally
 
-Download and extract the current package. Rename the extracted folder to `selfcollege-waba` if the archive adds a branch name, and keep its complete contents together.
+Download and extract the package, and keep the complete `selfcollege-waba` folder together.
 
 For one course/project place it at:
 
@@ -90,7 +90,7 @@ python3 -m venv .venv
 .venv/bin/python -m unittest discover -s scripts -p 'test_*.py'
 ```
 
-Input structure, formula blocks, migration from the previous reflow renderer, and limitations are documented in [pdf-style.md](references/pdf-style.md). Translation, educational reasoning, and visual fidelity still require review; automatic count/dimension checks do not prove content accuracy.
+Input structure, formula blocks, and rendering limitations are documented in [pdf-style.md](references/pdf-style.md). Translation, educational reasoning, and visual fidelity require review; automatic count/dimension checks do not prove content accuracy.
 
 To verify a downloaded bundle:
 

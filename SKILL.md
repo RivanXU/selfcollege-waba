@@ -5,7 +5,7 @@ description: Teach university course materials as connected lessons, with faithf
 
 <!-- Copyright (c) 2026 RivanXU. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0. See LICENSE and NOTICE. -->
 
-# Selfcollege Waba
+# selfcollege-waba
 
 Turn compressed course materials into a lesson a learner can follow and apply. Teach the course's reasoning, including foundations the instructor assumes. Keep original content, translation, classroom evidence, and tutor explanations distinguishable. Adapt to the learner and discipline; no school, major, or personal profile is built into this skill.
 

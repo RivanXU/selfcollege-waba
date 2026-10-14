@@ -8,8 +8,12 @@
   "green": "#ECF7F5",
   "amber": "#FFF5E9",
   "stripe": "#F5F8FA",
-  "guide_body_size": 10.7,
-  "guide_body_leading": 17.1,
+  "guide_body_size": 11.5,
+  "guide_body_leading": 18.5,
   "bilingual_body_size": 14,
-  "bilingual_body_leading": 23.5
+  "bilingual_body_leading": 23.5,
+  "annotation_body_size": 10,
+  "annotation_body_leading": 15.5,
+  "formula_size": 17,
+  "concept_gap": 16
 }

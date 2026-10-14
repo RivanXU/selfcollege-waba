@@ -1,0 +1,120 @@
+{
+  "course_code": "PHYSICS DEMO",
+  "course_name": "Constant acceleration - original public lesson",
+  "lecture": "From a model to a solved assignment",
+  "file_stem": "motion",
+  "source_pdf": "examples/source-slides.pdf",
+  "translated_pdf": "examples/translated-slides.pdf",
+  "bilingual_layout": {
+    "page_width": 1190.551,
+    "page_height": 841.89,
+    "annotation_height": 260
+  },
+  "labels": {
+    "source_heading": "Source slide - academic English",
+    "translation_heading": "Mirror slide - plain English",
+    "terms_heading": "Vocabulary",
+    "guide_name": "study-guide",
+    "bilingual_name": "slide-companion",
+    "source_footer": "Original authored demo / slide {page}",
+    "guide_reference_footer": "Study-guide pages {pages}"
+  },
+  "bilingual": [
+    {
+      "source_page": 1,
+      "title": "From acceleration to velocity",
+      "guide_pages": "1-2, 6",
+      "terms": [
+        [
+          "Initial",
+          "At the start; v0 is velocity at time zero."
+        ],
+        [
+          "Rate",
+          "Change per unit of time."
+        ],
+        [
+          "Slope",
+          "Change in graph height divided by change in time."
+        ]
+      ],
+      "notes": [
+        {
+          "label": "Prerequisite bridge",
+          "text": "A subscript identifies a particular value. The 0 in v0 labels the start; it does not multiply v. Acceleration of 3 m/s2 adds 3 m/s of velocity each second."
+        }
+      ],
+      "homework": [
+        {
+          "label": "Homework connection",
+          "text": "For part (a), first calculate the gain a t = 12 m/s, then add the starting 2 m/s. The endpoint 14 m/s also feeds the graph check in part (c).",
+          "source": "Full authored question and guided solution: study-guide pages 6-7."
+        }
+      ]
+    },
+    {
+      "source_page": 2,
+      "title": "Displacement is the area under velocity",
+      "guide_pages": "3, 7",
+      "terms": [
+        [
+          "Displacement",
+          "Final position minus starting position; it is signed."
+        ],
+        [
+          "Average velocity",
+          "The constant velocity producing the same displacement."
+        ],
+        [
+          "Trapezoid",
+          "A four-sided region with one pair of parallel sides."
+        ]
+      ],
+      "notes": [
+        {
+          "label": "Why this relation follows",
+          "text": "Velocity times a short time interval gives a small displacement. Add these strips to get the area. Since the velocity line is straight, its average height is halfway between the endpoint heights."
+        }
+      ],
+      "homework": [
+        {
+          "label": "Homework connection",
+          "text": "Part (c) splits the shaded region into an 8 m rectangle and a 24 m triangle. Their sum checks part (b). Distance equals forward displacement here because the cart does not reverse.",
+          "source": "Original authored graph; study-guide pages 3 and 7."
+        }
+      ]
+    },
+    {
+      "source_page": 3,
+      "title": "Build the constant-acceleration equation",
+      "guide_pages": "4-5, 7-8",
+      "terms": [
+        [
+          "Substitution",
+          "Replace a quantity with an expression equal to it."
+        ],
+        [
+          "Distribute",
+          "Multiply every term inside a sum by the outside factor."
+        ],
+        [
+          "Dimension",
+          "The physical kind of a quantity, such as length or time."
+        ]
+      ],
+      "notes": [
+        {
+          "label": "The new notation and the one-half",
+          "text": "Delta x is change in position; t squared is time multiplied by itself. The one-half comes from the triangular extra area, not from an arbitrary instruction to divide the final answer."
+        }
+      ],
+      "homework": [
+        {
+          "label": "Homework connection",
+          "text": "Part (b) separates starting-motion displacement, 8 m, from acceleration's extra 24 m. Both terms must have units of metres. The new practice on page 8 checks whether the reasoning transfers.",
+          "source": "All lesson text and questions are independently authored for this repository."
+        }
+      ]
+    }
+  ]
+}

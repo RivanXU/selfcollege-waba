@@ -1,61 +1,73 @@
 <!-- Copyright (c) 2026 RivanXU. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0. See LICENSE and NOTICE. -->
 
-# 教学、来源与课堂批注
+# Connected teaching and evidence
 
-## 核读与逐页台账
+## Read, map, then teach
 
-Syllabus 提供课程范围与考核依据，课件提供本讲结构，转写提供教师解释与强调。发生冲突时列明来源与版本，不预设任一材料必然正确。首次建档核读全部指定资料；逐讲学习重新核实相关原页，不机械重做全课程。
+Inspect the entire requested lecture before drafting individual explanations. Read text and rendered pages together: OCR commonly loses superscripts, minus signs, Greek letters, table boundaries, or plot labels. Record the file/version, physical page, topic, new assumptions, notation, examples, figures, transcript matches, homework links, and planned guide module. Preserve all source pages in the companion, including repeats.
 
-为每个原物理页记录标题、知识模块、文字／公式／图形覆盖、关键术语、转写匹配、疑点及精讲定位。封面、重复页和渐进展示页各有条目。扫描或 OCR 结果须对照原图；不可读的部分保留其位置并标明缺失。
+State the lecture's central question in ordinary language. Identify the path by which its slides answer it. Group consecutive pages by one meaningful question or reasoning task; do not isolate every formula or silently reorder the course by a dependency map. A module spanning several slides teaches their connected argument and accounts for each slide's additions.
 
-## 讲清一个模块
+Before moving on, name the previous result and the next unanswered question. For example: "We can now describe how velocity changes. To find displacement we need to connect velocity to time spent moving. The next slides use the area under a velocity-time graph to do that."
 
-默认模块标题中英并列；语言另有偏好时使用相应组合。来源已有的标题与术语保留原词，新增结构标题可准确翻译，但不能借译名添加知识。专业词首次出现给原词、目标语言术语和通俗解释，全文用词一致。
+## Teach a module as a conversation that can stand alone
 
-从它解决的问题开始，依次连接直觉、定义、符号、推导或论证、条件、原例应用及前后知识。数页可合为一模块，但各页新增假设与信息必须覆盖。非定量课程重点展开概念区分、论证链和证据；编程、实验和设计课程围绕材料中的代码、步骤和评价依据展开。
+Start with the problem the module resolves. Develop connected paragraphs, interleaving expressions, diagrams, and checks. Explain a new term in everyday language before relying on its formal definition; keep its original technical term beside the translation. Distinguish definitions, modeling assumptions, logical consequences, and empirical observations.
 
-**公式：**区分定义、恒等式、行为假设、最优条件、均衡条件和经验关系，逐一解释符号、上下标、条件与用途。检查量纲、可行域、正负、边界和限定条件。未定义符号须标明疑点；计算工具可验证代数或数值结果，不能证明模型假设本身。
+Explain prerequisites the slides assume: what a ratio measures, why units cancel, what differentiation holds fixed, how a graph represents a relation, what evidence supports a claim, or how program state changes. Mark these as **Tutor foundation supplement**. Absence from a PPT is a reason to explain an essential foundation, not evidence that a standard rule is uncertain. Keep the supplement relevant to the current bottleneck.
 
-**图表：**解释轴和标签、图例、点线面或分支的含义、阅读顺序、结论及条件。原图完整保留在对照版；精讲可准确重绘并标源页，保留关系与数值。表格用于有助于理解的概念比较、符号映射和解题步骤。
+For familiar mathematical rules show why they apply and their conditions. Verify specialized, current, contested, or unfamiliar facts against reliable primary sources and cite separately. If resources are unavailable, derive what can be established locally and identify the exact unresolved dependency. A symbol's mathematical role does not establish an undefined course-specific meaning.
 
-## 来源标记
+## Equations and worked reasoning
 
-| 类别 | 依据与定位 |
-|---|---|
-| 课件原文／原文译文 | 页面实际内容；标文件名和原物理页码。 |
-| 课堂记录 | 转写实际表述；标转写名和真实时间戳或段落号。 |
-| 资料内推导 | 从材料已有假设推出；标起始设定页并展示必要推导。 |
-| 助教整理 | 重组、解释或复习建议；标所据原页，与教师意见区分。 |
-| 信息不确定 | 缺失、冲突或不可核实；标 `（资料中未提及 / 信息不确定）` 并说明缺口。 |
+Give an equation a purpose before displaying it. Preserve its notation and use real mathematical typesetting: stacked fractions and correct scripts, roots, integrals, and matrices. Equations anchor a lesson; they do not define its organizational units.
 
-直接推导包括展开代数、枚举原模型分支、在相同假设下复算答案。前置知识先从本课程已提供材料查找；超出材料时说明理解缺口及影响。用户明确要求外部补充时另行检索、注明来源并与原文分开。抽象类比可辅助理解，不增添模型事实条件。
+At first use put a compact symbol legend beside/below the expression: meaning, role, unit/domain, indices, and fixed/variable status. Identify new symbols and aliases. Pronunciation helps when useful, but does not replace meaning. Explicitly distinguish function input from multiplication, exponents from labels, percentages from decimals, levels from changes/rates, and parameters from calculated results.
 
-原稿疑似错误时核对原图和上下文，对照版保留原写法，旁注疑点与有依据的修正；不可静默改写后再称为原文。
+Show the starting relation, intermediate transformations, the reason for each, and the final interpretation. State a nonzero-denominator condition when cancelling; positivity for logarithms; fixed quantities for partial differentiation; interior/boundary conditions for optimization when relevant. Algebraic verification does not prove model assumptions.
 
-## 课堂转写匹配
+After an intermediate relation say what it determines and what remains unknown. A ratio alone may need a total-resource constraint to produce quantities. An equality may describe an identity, a special assumption, or an optimality condition; identify which one. A repeated value in different formulas is not evidence that the underlying concepts are identical.
 
-按概念、符号、例题参数和上下文匹配原页，不按录音时长均摊。一段可覆盖多页，多段也可对应一页；依据不足时标出不确定性。提取与各页直接相关的可见批注，较长解释放入精讲并给定位。
+For numerical work follow: general relation → selected function → assumptions/givens → substitution → intermediate arithmetic → units/rounding → interpretation. Explain the selected function and derive relevant coefficients instead of treating them as magic inputs. State whether each later example resets to baseline or continues the preceding changes. Use a compact baseline/change/result table when comparing scenarios.
 
-有时间戳直接引用；没有则按实际段落编号 T001、T002……并保存编号映射。处理口误或识别错误时：
+If an instructor reuses a symbol for a different object, retain the source and make the distinction explicit. A teaching alias may clarify the guide but must be labeled and mapped to the original notation; never rewrite the companion silently.
 
-- 停顿和明显重复可整理；术语误识别结合原页及相邻语句修复。
-- 关键数值、正负号、因果方向或假设的改动保留原片段、建议解释和依据；不能确定时并列呈现。
-- 漏录写“转写未收录本页内容／信息不确定”，不推断教师未讲。
+## Match the discipline
 
-批注示例：`[老师明确强调｜T014] …`、`[根据上下文推断，待核对｜T018] …`、`[助教复习建议｜原 P12] …`。没有转写时直接完成课件学习，并仅使用材料能支持的教学判断。
+| Material | Connected reasoning | Application/check |
+| --- | --- | --- |
+| Mathematics, engineering, economics, statistics | Definition/assumption → derivation → interpretation | Calculation, dimensions, limiting cases, changed conditions. |
+| Literature, history, philosophy, social theory | Question → claim → evidence → inference → competing reading | Analyze supplied passages and qualify conclusions. |
+| Programming | Goal → inputs/state → behavior → failure cause → repair | Trace a small case and verify expected behavior. |
+| Laboratory, clinical theory, design | Objective → prerequisites → procedure → mechanism → evaluation | Interpret observations or evaluate against supplied criteria. |
 
-## 分层练习与答案
+Follow the relevant source sequence. Avoid numerical exercises in argument-based lectures. Discussion tasks need supported interpretations, not invented unique answers or teacher rubrics. Explain course theory within the task's scope.
 
-每个重要模块覆盖三档：**基础**解释或辨认概念；**中等**在原设定下应用或计算；**挑战**比较条件、边界或明确标注的原模型变式。纯概念模块采用有资料依据的分析与辨误题，不为凑题型编造现实案例。
+## Figures and tables
 
-答案与题目相邻，或给出同文件答案页码；直接提供关键步骤与理由，而不是只提问等待作答。题目基于原题、原模型或其变式时注明依据，自行组织的题标“基于资料的练习，非老师原题”。变式参数明确为练习设定；用户禁止自拟设定时只用原题和定性检查。
+Explain axes, units, legends, labels, regions, arrows, conditions, and reading order. Connect the figure to its neighboring claim/equation: what does it add, and what can it establish? Distinguish movement along a curve from changes to its defining relation. Preserve figures in the companion; accurate guide redraws retain source values and locators.
 
-核对原题条件和所有候选答案，区分唯一解、至少一个解及存在条件。无标准答案的讨论题提供有依据的要点与理由，不编教师评分标准。没有考核证据时不将练习标为“必考”或“历年高频”。
+## Provenance
 
-## 复习与继续答疑
+| Label | Meaning | Locator |
+| --- | --- | --- |
+| Source / translation | Actually present in supplied material | Filename + physical page. |
+| Classroom record | Supported teacher/student statement | Transcript + timestamp or paragraph. |
+| Tutor foundation supplement | Needed prerequisite; not attributed to teacher | Rule/topic; external reference when needed. |
+| Derived here | Follows from stated assumptions | Starting source pages + visible steps. |
+| Tutor explanation / practice | Reorganization, analogy, authored exercise | Supporting pages + explicit new assumptions. |
+| Uncertain / conflict | Unreadable, missing, or conflicting evidence | Exact gap and consequence. |
 
-一页知识框架串联主题、模块和方法；关键词表保留原词及统一译名；必会清单区分理解、计算和判断；题型—方法表提供识别信号、步骤、适用条件和易错点。下一步建议依据实际学习反馈，没有答题记录时不诊断个人薄弱项。
+Source typos stay visible in the original and translated pair; supported corrections belong in the bottom notes and guide. Shared citations can be grouped at module/paragraph boundaries so the learner can follow the argument without repeated interruptions.
 
-后续答疑先定位原页，再以更细的解释解决当前卡点。修订时更新相关内容及映射，保留无关章节。教师口径和课程术语记录在当前课程档案中。
+## Classroom transcripts
 
-单点答疑可在相关段落末尾合并标注共同来源，无需逐句重复。短转写的段落编号与原文映射可以直接保存在回复中；只有课程档案需要时再保存文件。公式可辨识的数学作用与课程中未说明的实际含义应分开解释。
+Match remarks by topics, notation, example values, and surrounding reasoning, not equal time intervals. One segment may span several pages. Cite real timestamps or stable T001-style paragraph IDs and preserve the mapping. Separate explicit teacher statements from contextual inference and tutor advice.
+
+Remove filler and obvious repetition. For changes to values, signs, formulas, assumptions, or causal direction preserve the original fragment, proposed reading, and evidence. Missing recording coverage means "not captured", not "not taught". No transcript means no invented teacher dialogue. Short remarks go below both slide panels; longer teaching belongs in the corresponding guide module.
+
+## Practice and follow-up
+
+Prioritize supplied examples and homework, then add concept checks, applications, and transfer tasks appropriate to the learning goal. Scale practice to scope; avoid identical exercise quotas for every minor module. Include answers and reasons near each task or at a precise same-file locator unless the learner requests hints first. Label new exercises and changed parameters as tutor-authored.
+
+A follow-up explanation should resolve the causal bottleneck at the requested depth. Return to the source and module; integrate improved explanations into the guide when revision is requested. Update mappings and the course record while preserving unrelated chapters.

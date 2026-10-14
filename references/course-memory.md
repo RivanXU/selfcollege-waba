@@ -1,61 +1,29 @@
 <!-- Copyright (c) 2026 RivanXU. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0. See LICENSE and NOTICE. -->
 
-# 课程档案与跨对话接续
+# Course records and continuation
 
-## 确定课程与资料范围
+Identify the authorized course space, course name/code, term, and instructor where available. Same code with a different term/instructor is not automatically the same archive. Another course's Lecture 1 is not this source. Read only materials within the learner's requested scope.
 
-先限定当前学习者拥有或明确授权用于本任务的空间，再以课程名称、课程代码和学期区分档案。没有代码或学期时，使用资料可支持的明确名称并记录未知项。代码相同但学期或教师不同，不能自动合并；其他项目同名的 Lecture 1 也不能当成本讲材料。
+Keep personal background, course files, questions, preferences, and progress outside the installed skill. Use a persistent course-owned file such as course-record.md; preserve existing chapters and terminology when updating.
 
-只引用已纳入本次课程任务的资料。个人背景、偏好、课件、转写、作业信息和答题表现保存在学习者自己的档案中，不写进 Skill 文件。偏好适用范围按 [个性化规范](personalization.md) 执行。
+## Useful record
 
-## 最小档案
+- Course identity and effective language/teaching/output preferences.
+- Sources: filenames, versions, counts, readability, actual inspected coverage.
+- Course map and lecture question; consecutive module/page index.
+- Symbol/terminology ledger, notation aliases and changed meanings.
+- Guide/companion versions and source-page-to-guide-section mapping.
+- Homework index: original question/subparts, module prerequisites, solution state.
+- Transcript coverage and real timestamp/paragraph mappings.
+- Observed questions, resolved explanations, actual attempts and demonstrated outcomes.
+- Unresolved source conflicts/gaps, unfinished deliverables, next action.
 
-建议文件名为 `<课程代码或名称>_学习档案.md`，保存在当前课程的持久位置。已有档案时更新相关条目并保留其他章节；字段缺失可以写“未知”，不要求用户先填完模板。
+Hashes or platform IDs are useful when available but need not clutter the learner's delivery message. A produced artifact means material preparation, not mastery. Record learner statements as self-reports rather than verified performance.
 
-```markdown
-# [课程] 学习档案
-课程名称与代码：
-学期、教师：
-资料范围：
-最后更新日期：
+## Continue
 
-## 本课程有效要求
-语言、讲解深度、交付格式、术语和视觉偏好。
+Read the course's active preferences, last position, and gaps. Return to actual relevant source pages rather than relying solely on an old summary. Complete the current scope, save artifacts and record changes, and identify the next step. Local edits, uploaded snapshots, and platform project settings are separate: verify each before claiming synchronization.
 
-## 源文件清单
-文件名、版本或文件标识、页数、可读性、已核读范围。
+If records are inaccessible, look in the current course space before asking for the minimal missing information. Do not claim to have read inaccessible conversations or files. With no persistence provide a copyable handoff containing identity, scope, preferences, covered pages/modules, remaining gaps, and next steps. When the user requests no files, keep continuity in the response.
 
-## 课程地图
-资料支持的课程目标、先修知识、章节联系与考核信息，附来源。
-
-## 逐讲记录
-原页索引、知识模块、术语、成品位置与版本、课堂转写覆盖、原页与精讲映射。
-
-## 学习与答疑
-实际卡点、已用解释、真实答题表现；未知不推断。
-
-## 疑点与未完成
-原文冲突、资料缺失、未读页面、未完成交付和下一步。
-
-## 偏好修订
-日期、具体要求及适用范围。
-```
-
-记录文件版本、哈希或平台标识仅在实际可取得且有助于识别时使用；无需把这些内部索引堆进交付说明。
-
-## 每次接续
-
-1. 确认当前课程，读取其有效要求、进度和未解决问题。
-2. 回到本讲原文件核实当前问题，不以旧摘要替代来源。
-3. 完成本次指定范围，保存成品和档案更新。
-4. 只依据真实问答记录理解程度；“已经生成讲义”不能记作“已经掌握”。
-
-上下文缺失时先寻找当前课程的可访问档案；确实无法读取才说明缺少什么，并索取最少必要资料。创建档案或安装 Skill 不会自动修改平台项目设置，也不保证每个新对话自动载入所有文件。
-
-能持久保存时说明实际位置；不能保存时交付可复制的接续摘要，涵盖课程身份、文件范围、有效偏好、完成进度及下一步。只承诺实际完成的保存与可访问能力。
-
-## 修订范围
-
-排版、解释或术语反馈默认写入当前课程偏好；用户明确说“所有课程”时更新本人通用偏好。需要修订已生成讲义时只更新相关章节和索引，保留其余内容。只有用户明确要求修改 Skill 本体时才编辑本人有权限的副本；日常答疑不批量重生成旧章节或改动其他人的档案。
-
-用户主动说明“已经掌握”时，记录为“用户自述”，与“经练习或问答核验”分开；尊重其接续安排，不把自述自动当作验证结果。用户明确不生成文件时，接续信息保留在回复中即可，说明本次未建立跨对话持久档案。
+Follow-up teaching feedback updates the relevant course preference. Revisions change related chapters/mappings and preserve others; an improved explanation does not authorize overwriting all historical artifacts or altering other course installations.

@@ -1,99 +1,154 @@
 <!-- Copyright (c) 2026 RivanXU. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0. See LICENSE and NOTICE. -->
 
-# 可调整的PDF初始样式与生成器
+# PDF layout and renderer contract
 
-没有个人偏好时使用以下样式；可调整颜色、字体、密度与语言。个性化配置保存在自己的课程目录中，与 Skill 默认样式分开。
+Use this reference when authoring the study guide or slide companion. The renderer composes locally authored content; it does not translate, reconstruct slide layouts, verify teaching claims, or solve homework. Prepare source-backed content first and visually inspect the final PDFs.
 
-## 精讲版：A4纵向
+## Two distinct reading experiences
 
-- 白底，左右边距约47pt；深蓝顶部细带、课程页眉、青绿色小标题，底部细线和页码。
-- 色值：深蓝`#17334D`，青绿`#117E82`，正文`#263746`，次级字`#607485`，浅蓝框`#EDF4FA`，浅绿框`#ECF7F5`，浅橙框`#FFF5E9`，分隔线`#D9E3EA`。
-- 正文约10.7-11.5pt，行距17-19pt；主标题约21pt，小标题约13pt；表格9.5-10.5pt，次级定位9pt左右。不要使用小字号塞入过量正文。
-- 标题、说明、表格、图示和提示框交替组织，每页聚焦一个合理学习单元；避免不必要的装饰图、长篇密集段落和大量空泛总结。
-- 正文使用嵌入的中文字体，数学符号完整；公式可使用可靠的数学排版或矢量图，不能用低清截图代替需要读取的数学表达式。颜色只作辅助，信息仍须由文字明确表达。
-- 表格深蓝表头、浅色交替行、自动换行；提示框用浅绿/蓝，易错和原文疑点用浅橙。提供书签以及原页定位。
+The **study guide** teaches one connected learning unit at a time. Use the chain: question -> necessary prerequisite -> definitions -> why the equation applies -> one justified change per line -> worked calculation -> interpretation -> linked homework. A new symbol receives its definition beside the first equation that uses it. Put a homework question, its source location, the relevant lesson, each solution step and a check together. Explicitly distinguish source statements, instructor remarks and added explanations.
 
-## 对照版：宽幅横向
+The **slide companion** preserves a page-for-page pair of slides. Above the annotation band, the source page and translated page have identical viewport dimensions and exactly the same scale. Translation belongs in the source slide's corresponding text boxes, with the same hierarchy, graphics, equation positions and reading order. Vocabulary, prerequisites, instructor remarks, homework links and explanatory additions all belong in a full-width band below both slides. The translation page must be prepared before using this compositor, preferably by editing a duplicate of the original slide deck and exporting it. A matching page size alone does not prove matching layout or complete translation.
 
-- 默认A3横向，左侧英文完整原页约540pt宽，右侧完整中文译文，正文约14pt、行距23.5pt。
-- 英文原页优先通过PDF矢量嵌入完整保留，不裁掉页边、图、底注或渐进页。扫描原稿可保持原像素，不虚称矢量。
-- 左下术语表，右侧译文之后为理解提示与课堂批注；页脚标源文件/物理页码、精讲页码。第n页就是原第n页。
-- 长注释转到精讲并加具体页码；译文不能删减或转移成“不译”。密集页可加宽/加高对照页或另做更适合原稿比例的版式，仍保持一个原页对应一个成品页。
-- 本包生成器会在溢出时明确失败，不能忽略失败或通过无边界缩小字号继续输出。
+If editable slides are unavailable, manually reconstruct a faithful translation using positioned text and source graphics, then compare every page visually. The bundled renderer does not automatically mask source text, reconstruct text boxes, translate diagram labels, or verify an independently supplied translation PDF. Record unresolved mismatches instead of claiming fidelity.
 
-## 使用生成器
+## Readable knowledge blocks
 
-`scripts/render_study_pdfs.py`接受内容清单JSON，生成两份PDF或其中一份。它只负责本地排版与原页映射；所有翻译、讲解、来源和答案必须先由助教基于原资料编写。运行环境需要Python、`reportlab`与`pypdf`，依赖见`requirements.txt`。有PDF技能时按其要求执行制作准备和操作记录；没有时仍须提取、排版、逐页渲染和核验。可使用当前环境已有的PDF渲染工具或本地PDF阅读器完成视觉核查。
+- Study-guide defaults: A4 portrait, 47-point margins, 11.5-point body with 18.5-point leading; 13.2-point section headings; 21-point page titles; 17-point mathematics.
+- Group a connected concept under one heading. Keep its prerequisites, derivation, symbol definitions, worked example and interpretation together or continue onto an explicitly titled next page. Leave 16 points between concept groups.
+- A page can contain multiple related blocks, but its structure follows the knowledge dependency, not the source slide's line breaks. Avoid paragraphs that cram several unexplained operations into one sentence.
+- Slide-companion defaults: 1190.551 x 841.89 points, 36-point outer margins, a 32-point column gap and a 200-point annotation band. Both complete pages fit the available viewports at one shared scale. Increase the output page height or annotation band for more notes; avoid making the text smaller.
+- Body, vocabulary tables, equations, captions and notes retain distinct roles. Source PDF text and graphics remain vector where they were vector; scanned source pages remain scans.
+- Colors are secondary: navy `#17334D`, teal `#117E82`, ink `#263746`, muted `#607485`, light blue `#EDF4FA`, light green `#ECF7F5`, amber `#FFF5E9`. Source labels and warning text convey the meaning without color.
+
+## Exact-layout paired-PDF input
+
+The command-line entry point is:
 
 ```bash
-python3 <技能目录>/scripts/render_study_pdfs.py --spec /absolute/path/content.json --output-dir /absolute/path/output
+python3 scripts/render_study_pdfs.py --spec /absolute/path/content.json --output-dir /absolute/path/output
 ```
 
-使用外部个人风格时增加`--style /absolute/path/pdf-style-overrides.json`。该文件只写需要覆盖的已知键，例如：
+Install the declared Python dependencies from `requirements.txt`. The bundled Noto Sans SC font covers English, Chinese and some other scripts; a course may pass `--font /absolute/path/covered.ttf`. Coverage is checked before text is drawn. The math renderer uses its own mathematical fonts.
 
-```json
-{"navy":"#473366","teal":"#75509B","guide_body_size":11.2,"guide_body_leading":18.0}
-```
-
-允许键是默认`assets/style_tokens.json`中的13项；颜色须为`#RRGGBB`，字号/行距须为有限正数，行距不得小于字号。未知键会报错；覆盖文件不会改动默认样式资产。尺寸变大引起溢出时重新分页，不删教学内容。
-
-非英文原稿、非中文目标语言或个人命名需求，必须在内容清单中显式设置准确的`labels`，不能照搬默认英文原页标签。例如：
-
-```json
-{"labels":{"source_heading":"SOURCE ORIGINAL｜完整原页","translation_heading":"译文与注释｜逐条对应","terms_heading":"本页专业词汇","bilingual_name":"逐页原文对照","guide_name":"课程精讲"}}
-```
-
-`labels`还支持`guide_header`、`bilingual_header`、`source_footer`、`guide_reference_footer`。两种header省略时跟随产物名称；source_footer仅接受`{filename}`和`{page}`，guide_reference_footer仅接受`{pages}`。文件名后缀不能含路径分隔符，两个产物不能同名；标签内的`&`、`<`由生成器转义。正文与标题内的轻量排版标签仍按下述规则处理。未提供覆盖时原中英版式保持不变。
-
-内容清单最小示例（示例仅说明结构，不是课程内容）：
+A paired companion requires `source_pdf` and `translated_pdf`. Both PDFs must contain the same number of pages, and each paired visible page must have the same physical dimensions after rotation and PDF UserUnit normalization, within 0.01 point. The `bilingual` entries cover every source page exactly once in order, from 1 to N. This minimal specification makes one companion and one guide:
 
 ```json
 {
-  "course_code": "COURSE-CODE",
-  "course_name": "课程中文名 / English Course Name",
+  "course_code": "COURSE-101",
+  "course_name": "Example course",
   "lecture": "Lecture 1",
-  "file_stem": "COURSE-CODE_Lecture1",
-  "source_pdf": "/absolute/path/source.pdf",
+  "file_stem": "lecture-01",
+  "source_pdf": "/absolute/path/source-slides.pdf",
+  "translated_pdf": "/absolute/path/translated-slides.pdf",
+  "bilingual_mode": "paired_pdf",
+  "bilingual_layout": {
+    "page_width": 1190.551,
+    "page_height": 841.89,
+    "annotation_height": 200
+  },
   "bilingual": [
     {
       "source_page": 1,
-      "title_zh": "本页中文标题",
-      "title_en": "Original page title",
-      "translation": ["按顺序完整翻译的段落"],
-      "terms": [["English term", "中文术语与解释"]],
-      "notes": [{"label": "理解提示｜资料内推导", "text": "根据本页定义解释", "source": "原稿第1页"}],
+      "title": "A matched pair of slides",
+      "terms": [["Ratio", "A comparison obtained by division"]],
+      "notes": [{"label": "Prerequisite", "text": "Explain the assumed concept here.", "source": "Added explanation; source slide 1"}],
+      "transcript": [{"label": "Instructor remark", "text": "A verified remark from the provided recording.", "source": "Recording 03:14"}],
+      "homework": [{"label": "Practice link", "text": "Question 1 uses this ratio; its complete worked solution is on guide page 2.", "source": "Problem sheet, question 1"}],
       "guide_pages": "1-2"
     }
   ],
   "guide": [
     {
-      "title": "学习单元标题",
-      "subtitle": "English title / 模块定位",
-      "source": "source.pdf，第1页",
+      "title": "Understand a ratio before calculating",
+      "subtitle": "One learning unit",
+      "source": "Source slide 1; problem sheet question 1",
       "blocks": [
-        {"type": "heading", "text": "核心问题"},
-        {"type": "text", "text": "完整教学文字"},
-        {"type": "box", "label": "直觉解释", "text": "解释", "tone": "green"},
-        {"type": "table", "header": ["英文", "中文"], "rows": [["term", "术语"]], "widths": [1, 1]},
-        {"type": "formula", "text": "x<sub>1</sub> + x<sub>2</sub> = c"},
-        {"type": "image", "path": "/absolute/path/verified-diagram.png", "caption": "原稿第1页图的说明"},
-        {"type": "source_crop", "source_pdf": "/absolute/path/source.pdf", "page": 1, "clip": [20, 40, 330, 250], "height": 200, "caption": "原图局部；来源与裁切范围明确"}
+        {
+          "type": "concept",
+          "title": "From a comparison to an equation",
+          "blocks": [
+            {"type": "text", "text": "Introduce the question and necessary prerequisite."},
+            {"type": "formula", "latex": "r=\\frac{a}{b}", "reason": "Divide the quantity being compared by its reference quantity. The reference must be nonzero.", "symbols": [["r", "The ratio"], ["a", "The quantity being compared"], ["b", "The nonzero reference quantity"]]},
+            {"type": "box", "label": "Check understanding", "text": "Explain how the equation answers the original question.", "tone": "green"}
+          ]
+        }
       ]
     }
   ]
 }
 ```
 
-- `bilingual`须列出原PDF全部页，每个`source_page`严格依次为1至N。只需某一产物时省略另一字段；用户指定原页子集时先明确导出子集副本并另保留原物理页映射，或调整生成器，不能伪造全稿覆盖。
-- `translation`为完整译文；图中文字也需译。`notes`可包含课堂批注，`label`与`source`中写实际转写定位和来源类别。没有转写不填虚构课堂标签。
-- 为保持兼容，`title_zh`作为主标题、`title_en`作为第二语言/原稿标题字段；字段名不要求材料必须为中英文。实际显示文本应符合当前语言设置。
-- 精讲`guide`按页构造，每页`blocks`自动计算高度；溢出须将精讲内容合理拆页。`source_crop`只用于精讲，原页完整对照不裁切。原页和裁切区域通过PDF页面内容合成，原稿中的矢量文字与图形保留矢量；扫描图仍保持原始图像。
-- `source_crop.clip`为`[左, 上, 右, 下]`，以原PDF旋转后可见页面的左上角为原点，单位为PDF点（1/72英寸），范围须在页面内。它只控制显示区域，不会删除原PDF区域外的隐藏内容，不能用于隐私遮盖或脱敏。合成的是页面文字、图形与图像；交互表单、链接及批注不会复制，有批注的资料应先保存一份已将批注转成页面内容的副本。
-- 文本允许不带属性的`<b>`、`<strong>`、`<i>`、`<em>`、`<u>`、`<strike>`、`<sub>`、`<super>`、`<sup>`与`<br/>`轻量标签；其他标签及属性会被拒绝。原文中的`&`与`<`须写为`&amp;`与`&lt;`。图片通过`image`块引用已有本地文件，不能在正文中嵌入图片或远程URL。生成器不会下载外部图片。
-- 默认嵌入包内的`assets/fonts/NotoSansSC-Regular.ttf`，字体许可见同目录的`OFL.txt`。可用`--font /absolute/path/cjk.ttf`指定另一个允许嵌入且覆盖所用文字的TrueType字体。生成器会检查文字字形；遇到缺字会在替换成品前报错并列出字符与Unicode编号。默认字体覆盖中文、拉丁文及常用数学符号，但不包含所有语言或符号，例如`ℝ`、`ℕ`、`ℤ`。遇到缺字须改用合适字体，或将公式用可靠数学工具排版为清晰的本地图片；不能删除或擅自替换原公式符号。
-- 所有输入须为已有本地文件。原PDF、裁切来源、插图、内容清单、样式配置、字体与输出必须不同；生成器会检查实际路径与硬链接，拒绝用成品覆盖引用输入。文件名不得含路径分隔符。两份文件名分别为`<file_stem>_逐页中英对照.pdf`和`<file_stem>_零基础精讲.pdf`。
-- 上述文件名是未提供`labels`时的默认值；设置`guide_name`或`bilingual_name`后对应后缀和PDF标题随之改变。
+The example's transcript entry is schema illustration only. Omit that field when no recording or transcript was supplied. The example assumes a one-page source; add one `bilingual` entry per actual source page. Either `guide` or `bilingual` can be omitted to produce only the other artifact.
 
-## 交付核查
+`title` is the preferred page heading. Legacy `title_zh` and `title_en` are accepted as heading fallbacks; they do not reconstruct a translated slide. `terms` contains pairs of term and explanation. `notes`, `transcript` and `homework` contain entries with `label`, `text` and optional `source`. All are rendered only in the bottom band. Long notes must move to a cited guide page or receive more physical page space.
 
-核对页数、所有原页的英文内容、完整中文译文、图表标签、数学、原文疑点、课堂定位、练习答案和互相页码指引。逐页渲染看图；文本提取相同并不能证明图形/公式没问题。确认无乱码、黑框、重叠、裁切与过小字号，再按当前环境保存PDF和课程档案。生成器会保留书签，但不会核查教学结论或自动证明来源正确。
+## Mathematics with genuine fraction bars
+
+A formula block requires `latex` and `reason`. Use `\frac{numerator}{denominator}` for division, braces for multi-character scripts and a separate block for each derivation step. The renderer rejects the old `formula.text` field and slash fractions. It draws supported MathText LaTeX as PDF vector outlines, including actual fraction rules, superscripts and subscripts. Text font failures do not permit deleting symbols.
+
+The fraction rule applies to displayed mathematical division such as `a/b` or `dy/dx`. Preserve actual programming operators, file paths, unit labels and structural slash notation from the source. Ordinary prose/code outside formula blocks is untouched. Inside a formula, mark a literal unit/code/text region explicitly, for example `\mathrm{m/s}`, `\mathtt{a/b}` or `\text{path/to/file}`. A structural slash can be written as `\text{/}`. These literal regions retain their slash; they must not be used to disguise a displayed fraction.
+
+```json
+{"type":"formula","label":"Step 2: substitute the values","latex":"r=\\frac{12}{4}=3","reason":"Replace the numerator and denominator using the quantities identified in the question.","symbols":[["r","A unitless ratio because both quantities have the same unit"]]}
+```
+
+The first column of `symbols` is a LaTeX math expression, also rendered as a vector formula. The second column is explanatory text. Define every newly introduced symbol nearby, including its units, role, index and relevant domain. The renderer cannot decide whether those definitions or the mathematical claim are correct; the author performs that check.
+
+MathText supports a useful LaTeX subset rather than a full TeX installation. Unsupported commands, warning-producing expressions and over-wide equations fail. Rewrite an equivalent supported expression or provide a verified vector source crop; never silently replace it with a slash or shrink it to fit. An `image` block is an explicit image fallback and cannot be described as vector mathematics. Long derivations use one step per formula block. Supply a readable verbal explanation as well as the formula because these PDFs are not tagged accessible documents and mathematical outlines are not searchable text.
+
+The bundled engine handles common fractions, ordinary/partial derivatives, integrals, sums, roots, logarithms and mathematical alphabets. Matrix, cases and aligned environments such as `\begin{pmatrix}`, `\begin{cases}` and `\begin{aligned}` require another capable engine; they are not supported by the bundled formula block. Use separate formula blocks for an aligned derivation. For a new matrix or piecewise expression, typeset it with an available full TeX-compatible engine, export a local vector PDF, and embed its verified page/region with `source_crop`. Keep the derivation reason and symbol legend immediately beside/below that crop as ordinary guide blocks. If such an engine is unavailable, report that precise limitation rather than claiming the expression was rendered. A source crop of an existing source formula is useful only when it actually contains the required expression.
+
+For example, after authoring and verifying a tightly bounded local PDF of a matrix equation, include these neighboring blocks on the same guide page:
+
+```json
+[
+  {"type":"source_crop","source_pdf":"/absolute/path/authored-matrix-equation.pdf","page":1,"height":95,"caption":"Tutor derivation, step 3; vector equation authored with a full TeX engine"},
+  {"type":"text","text":"Why this step follows: collect the two simultaneous linear equations into one matrix equation. The first row reproduces the first equation; the second row reproduces the second."},
+  {"type":"table","header":["Symbol","Meaning in this step"],"rows":[["A","The 2 by 2 matrix of fixed coefficients"],["x","The column vector of the two unknowns"],["b","The column vector of given right-hand sides"]]}
+]
+```
+
+Use a tight exported PDF page or an explicit verified `clip` so the formula remains readable. A local raster fallback instead uses `{"type":"image","path":"/absolute/path/verified-equation.png","height":95,"caption":"Explicit raster equation fallback"}` and requires resolution/visual review; it cannot carry a vector claim.
+
+## Guide blocks and bounded pagination
+
+Each `guide` entry describes one explicit page. Supported blocks are:
+
+| Block | Content |
+| --- | --- |
+| `concept` | `title` and nested `blocks`, with a visible inter-group gap |
+| `heading`, `text`, `small` | `text`, using restrained markup |
+| `formula` | `latex`, required `reason`, optional `label` and `symbols` |
+| `box` | `label`, `text`, optional tone `green`, `blue` or `amber` |
+| `table` | optional `header`, required `rows`, optional positive column `widths` |
+| `image` | local `path`, optional positive maximum `height` and `caption` |
+| `source_crop` | local `source_pdf`, 1-based `page`, optional `clip`, positive maximum `height` and `caption` |
+
+Overflow raises an error. Split at a pedagogical boundary and add an explicit continuation page with the previous step and next question. The renderer does not delete text, shrink body fonts, truncate notes or silently add pages that would break page references.
+
+`source_crop.clip` is `[left, top, right, bottom]` in physical PDF points, measured from the top-left corner of the rotated visible source page. It must stay within that page. Cropping changes the visible region, but does not remove hidden material and must never be used for privacy redaction. Composition omits interactive forms, links and annotations; flatten legitimate source annotations to page content in a separate copy if they must appear.
+
+Text accepts simple attribute-free `<b>`, `<strong>`, `<i>`, `<em>`, `<u>`, `<strike>`, `<sub>`, `<super>`, `<sup>` and `<br/>`. Escape a literal ampersand or less-than sign as `&amp;` or `&lt;`. Images use local `image` blocks; embedded HTML resources and remote image URLs are rejected.
+
+## Explicit reflow fallback
+
+A translation array is not an exact-layout slide. If a reader intentionally requests a reflowed text companion, specify `"bilingual_mode": "reflow"`, omit `translated_pdf`, and give each page a `translation` array. Every output page displays **Reflow fallback - layout differs from source** inside the right viewport. Both viewport boundaries remain equal, and supplementary notes remain below both. This fallback cannot satisfy a request for mirrored PPT layouts and must not be used without a conscious choice.
+
+## Course-owned labels and style overrides
+
+Defaults and output filenames are English: `<file_stem>_study-guide.pdf` and `<file_stem>_slide-companion.pdf`. Actual teaching and translation language follow the learner's course preference, independently of public package naming.
+
+Use `labels` to change `source_heading`, `translation_heading`, `terms_heading`, `guide_name`, `bilingual_name`, `guide_header`, `bilingual_header`, `source_footer` or `guide_reference_footer`. Header labels follow the output name when omitted. Footer placeholders are restricted to `{filename}`, `{page}` and `{pages}` in their respective fields. Names must be plain filename stems; the two outputs must have distinct names.
+
+Use `--style /absolute/path/style-overrides.json` for a course-owned JSON containing only known keys from `assets/style_tokens.json`. Colors are six-digit `#RRGGBB`; dimensions are finite positive numbers; leading is at least body font size. Overrides preserve bundled assets. Do not lower readable sizes to force more content onto a page.
+
+## Safety and verification
+
+All referenced input paths must name existing local files. Outputs are checked against referenced PDFs, images, fonts, content specifications, style overrides, the renderer and bundled style tokens, including hard-link aliases. All requested artifacts are staged before publication; a rendering error preserves existing deliverables, and a publication failure rolls back files already replaced. A process kill or machine failure during multi-file publication is outside this rollback guarantee.
+
+The success response contains output paths, page counts and a companion positioning report. For every page, the report records source dimensions, the shared scale, both viewports and the bottom annotation band. It explicitly states that geometric checks are not proof of layout/content fidelity. Keep this report with course QA evidence when useful.
+
+Run the regression suite with `python3 scripts/test_render_study_pdfs.py`. It checks page order/count, dimension mismatch, rotation/UserUnit handling, actual identical merge scales, labeled fallback, fraction-bar and script geometry, vector drawing, overflow, input protection and rollback.
+
+Before delivery, render every final page to an image and inspect it at reading size. Confirm the pair's text boxes, diagrams, equation placements, completeness and reading order; confirm notes are exclusively below both pages; check each symbol, derivation reason, homework question, solution and cross-reference. Text extraction or matching page counts alone cannot establish visual fidelity. Record the final filenames, page counts, reviewed images and remaining limitations in the course workspace.

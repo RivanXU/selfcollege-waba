@@ -1,26 +1,27 @@
-# 第三方组件与资料
+# Third-party components and materials
 
-selfcollege-waba 的原创文件适用根目录 [LICENSE](LICENSE) 及 [NOTICE](NOTICE)。第三方组件保留自己的许可。
+Original Selfcollege Waba files are governed by [LICENSE](LICENSE) and [NOTICE](NOTICE). Third-party components retain their own licenses.
 
-## PDF 工具依赖
+## Python dependencies
 
-下列 Python 库由使用者的运行环境单独安装，本包不分发它们的代码：
+These libraries are installed separately in the user's environment; their source code is not bundled in this package.
 
-| 组件 | 用途 | 许可 |
+| Component | Purpose | License |
 | --- | --- | --- |
-| [ReportLab](https://pypi.org/project/reportlab/) | 文字、表格和 PDF 版式 | [BSD 许可文本](licenses/REPORTLAB.txt) |
-| [pypdf](https://pypi.org/project/pypdf/) | 原页保留、矢量合成与 PDF 文件处理 | [BSD 许可文本](licenses/PYPDF.txt) |
+| [ReportLab](https://www.reportlab.com/) | Text, tables, PDF layout | BSD; convenience copy at [licenses/REPORTLAB.txt](licenses/REPORTLAB.txt). |
+| [pypdf](https://pypdf.readthedocs.io/) | PDF inspection and vector composition | BSD; convenience copy at [licenses/PYPDF.txt](licenses/PYPDF.txt). |
+| [Matplotlib](https://matplotlib.org/) | MathText vector typesetting and example plots | [Matplotlib license](https://matplotlib.org/stable/project/license.html); retain the license included with the installed distribution. |
 
-随包许可文本用于方便查阅；安装其他发行版时，仍应保留并遵守该发行包自带的许可。
+When installing a different distribution/version, retain and comply with that distribution's license. Mathematical vector outlines and any embedded font subsets use fonts supplied with Matplotlib. Their original notices are preserved in [DejaVu license](licenses/DEJAVU.txt) and [STIX license](licenses/STIX.txt).
 
-## 随包字体
+The example builder uses [Pillow](https://pillow.readthedocs.io/) for preview images ([HPND license](https://pillow.readthedocs.io/en/stable/about.html#license)), and a separately installed [Poppler](https://poppler.freedesktop.org/) pdftoppm executable to render review images. These tools are not bundled.
 
-[`assets/fonts/NotoSansSC-Regular.ttf`](assets/fonts/NotoSansSC-Regular.ttf) 是从 [Google Fonts 官方下载源](https://fonts.google.com/download/list?family=Noto%20Sans%20SC) 获取的完整静态 Noto Sans SC Regular 字体，文件未经修改。其原始版权与 [SIL Open Font License](assets/fonts/OFL.txt) 随包保留。字体独立适用该许可，不适用项目的 PolyForm 许可。
+## Bundled font
 
-该字体可随软件分发并嵌入 PDF；其许可不要求生成的文档采用字体许可。也可通过生成器的 `--font` 参数指定自己有权使用和嵌入的 TTF 字体。
+[assets/fonts/NotoSansSC-Regular.ttf](assets/fonts/NotoSansSC-Regular.ttf) is an unmodified static Noto Sans SC Regular font obtained from [Google Fonts](https://fonts.google.com/noto/specimen/Noto+Sans+SC). Its copyright and SIL Open Font License are preserved at [assets/fonts/OFL.txt](assets/fonts/OFL.txt). The font is independently licensed and is not subject to the project's PolyForm license.
 
-## 学习资料与成果
+You may select another font you are authorized to embed. Different scripts and complex text shaping require appropriate fonts and rendering tools.
 
-`examples/` 中的教学内容由本项目编写，用于展示排版与学习流程，不来自真实课程或考试。
+## Educational material
 
-用户提供的课件、教材、课堂记录、图片及其他资料保留原有权利。使用或分享包含这些资料的学习成果时，仍应遵守资料本身的许可与使用范围。生成 PDF 不表示项目作者取得了输入资料的权利，也不自动把学习者独立撰写的内容改为本项目许可。
+Public examples are original material authored for this project; they are not copied from a real course or examination. Learner-supplied slides, textbooks, transcripts, assignments, and images retain their original rights. Generating a PDF does not transfer those rights to the author or relicense a learner's independently authored content.

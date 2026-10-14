@@ -3,3 +3,5 @@
 # Required Notice: selfcollege-waba by RivanXU.
 reportlab
 pypdf
+matplotlib>=3.8
+Pillow>=10.0

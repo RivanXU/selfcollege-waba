@@ -10,11 +10,13 @@ All requested outputs are rendered in a staging folder before replacing outputs.
 import argparse
 import io
 import json
+import logging
 import math
 import os
 import re
 import string
 import tempfile
+import warnings
 from html.parser import HTMLParser
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -27,21 +29,25 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Flowable, Image, Paragraph, Spacer, Table, TableStyle
+from matplotlib.font_manager import FontProperties
+from matplotlib.ft2font import LoadFlags
+from matplotlib.mathtext import MathTextParser
+from matplotlib.path import Path as MathPath
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_FONT = ROOT / 'assets/fonts/NotoSansSC-Regular.ttf'
 TOKENS = json.loads((ROOT / 'assets/style_tokens.json').read_text())
 C = {k: colors.HexColor(v) for k, v in TOKENS.items() if isinstance(v, str)}
 DEFAULT_LABELS = {
-    'source_heading': 'ENGLISH ORIGINAL｜完整英文原页',
-    'translation_heading': '中文译文｜逐条对应',
-    'terms_heading': '本页术语｜English → 中文',
-    'guide_name': '零基础精讲',
-    'bilingual_name': '逐页中英对照',
-    'guide_header': '零基础精讲',
-    'bilingual_header': '逐页中英对照',
-    'source_footer': '来源：{filename} · 原第{page}页',
-    'guide_reference_footer': '精讲版对应：第{pages}页',
+    'source_heading': 'Source slide',
+    'translation_heading': 'Translated slide',
+    'terms_heading': 'Vocabulary',
+    'guide_name': 'study-guide',
+    'bilingual_name': 'slide-companion',
+    'guide_header': 'Study guide',
+    'bilingual_header': 'Slide companion',
+    'source_footer': 'Source: {filename}, page {page}',
+    'guide_reference_footer': 'Study guide: pages {pages}',
 }
 
 
@@ -58,7 +64,7 @@ def require_glyphs(text):
         details = ', '.join(f'{char!r} (U+{ord(char):04X})' for char in missing)
         raise ValueError(f'Font is missing characters: {details}. '
                          'Use --font with a font covering these characters, or render '
-                         'the formula with suitable mathematical typesetting as a local image. '
+                         'use a formula block with LaTeX for mathematics. '
                          'Do not replace or omit source symbols.')
 
 
@@ -124,14 +130,19 @@ def referenced_inputs(spec, args):
             paths.append(local_input(getattr(args, name), f'--{name}'))
     if args.font is None:
         paths.append(local_input(DEFAULT_FONT, 'bundled font'))
-    if spec.get('source_pdf'):
-        paths.append(local_input(spec['source_pdf'], 'source_pdf'))
-    for page in spec.get('guide', []):
-        for block in page.get('blocks', []):
+    for name in ('source_pdf', 'translated_pdf'):
+        if spec.get(name):
+            paths.append(local_input(spec[name], name))
+    def collect(blocks):
+        for block in blocks:
             if block.get('type') == 'source_crop':
                 paths.append(local_input(block['source_pdf'], 'source_crop.source_pdf'))
             elif block.get('type') == 'image':
                 paths.append(local_input(block['path'], 'image.path'))
+            elif block.get('type') == 'concept':
+                collect(block.get('blocks', []))
+    for page in spec.get('guide', []):
+        collect(page.get('blocks', []))
     return paths
 
 
@@ -152,21 +163,30 @@ def source_page(path, number, clip=None):
         raise ValueError('Use an unlocked local copy of the source PDF.')
     if isinstance(number, bool) or not isinstance(number, int) or not 1 <= number <= len(reader.pages):
         raise ValueError('Source PDF page must be an integer in the document page range.')
-    page = reader.pages[number - 1]
+    # Attach the page to a writer before changing its content stream or boxes.
+    # This also isolates normalization from the caller's original document.
+    working = PdfWriter()
+    page = working.add_page(reader.pages[number - 1])
     page.transfer_rotation_to_content()
+    unit = float(page.get('/UserUnit', 1))
+    if not math.isfinite(unit) or unit <= 0:
+        raise ValueError('Source PDF has an invalid UserUnit.')
+    if unit != 1:
+        page.scale_by(unit)
+        if '/UserUnit' in page:
+            del page['/UserUnit']
     media, crop = page.mediabox, page.cropbox
     left = max(float(media.left), float(crop.left))
     bottom = max(float(media.bottom), float(crop.bottom))
     right = min(float(media.right), float(crop.right))
     top = min(float(media.top), float(crop.top))
-    unit = float(page.get('/UserUnit', 1))
-    if not math.isfinite(unit) or unit <= 0 or right <= left or top <= bottom:
-        raise ValueError('Source PDF has an invalid visible page box or UserUnit.')
+    if right <= left or top <= bottom:
+        raise ValueError('Source PDF has an invalid visible page box.')
     if clip is not None:
         if (not isinstance(clip, (list, tuple)) or len(clip) != 4
                 or any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) for v in clip)):
             raise ValueError('source_crop.clip must contain four finite coordinates.')
-        x0, y0, x1, y1 = [v / unit for v in clip]
+        x0, y0, x1, y1 = clip
         if not (0 <= x0 < x1 <= right - left and 0 <= y0 < y1 <= top - bottom):
             raise ValueError('source_crop.clip must be within the visible source page.')
         left, bottom, right, top = left + x0, top - y1, left + x1, top - y0
@@ -185,7 +205,7 @@ def merge_sources(path, placements):
     for placement in placements:
         page, (left, bottom, right, top) = source_page(
             placement['source_pdf'], placement['source_page'], placement.get('clip'))
-        scale = min(placement['width'] / (right - left), placement['height'] / (top - bottom))
+        scale = placement.get('scale', min(placement['width'] / (right - left), placement['height'] / (top - bottom)))
         x = placement['x'] + (placement['width'] - (right - left) * scale) / 2
         y = placement['y'] + (placement['height'] - (top - bottom) * scale) / 2
         transform = Transformation().translate(-left, -bottom).scale(scale).translate(x, y)
@@ -219,6 +239,120 @@ class PDFSource(Flowable):
             'width': self.width, 'height': self.height})
 
 
+def has_fraction_slash(latex):
+    """Reject fraction shorthand while preserving explicitly literal units/code."""
+    position = 0
+    literal_command = re.compile(r'\\(?:text|mathrm|mathtt|operatorname)\s*\{')
+    while position < len(latex):
+        command = literal_command.match(latex, position)
+        if command:
+            position = command.end()
+            depth = 1
+            while position < len(latex) and depth:
+                if latex[position] == '\\':
+                    position += 2
+                    continue
+                if latex[position] == '{':
+                    depth += 1
+                elif latex[position] == '}':
+                    depth -= 1
+                position += 1
+            continue
+        if latex[position] == '/':
+            return True
+        position += 1
+    return False
+
+
+class MathFormula(Flowable):
+    """Draw MathText's glyph outlines and rules directly as PDF vector paths."""
+    def __init__(self, latex, font_size=None):
+        super().__init__()
+        if not isinstance(latex, str) or not latex.strip():
+            raise ValueError('formula.latex must contain a LaTeX math expression.')
+        latex = latex.strip()
+        if latex.startswith('$') and latex.endswith('$'):
+            latex = latex[1:-1]
+        if '$' in latex or '\n' in latex:
+            raise ValueError('Use one formula.latex expression per block, without embedded dollar signs or line breaks.')
+        if has_fraction_slash(latex):
+            raise ValueError('Typeset division using \\frac{numerator}{denominator}; slash fractions are not accepted.')
+        self.latex = latex
+        self.font_size = font_size or TOKENS['formula_size']
+        math_logger = logging.getLogger('matplotlib.mathtext')
+        log_buffer = io.StringIO()
+        handler = logging.StreamHandler(log_buffer)
+        handler.setLevel(logging.WARNING)
+        math_logger.addHandler(handler)
+        previous_propagation = math_logger.propagate
+        math_logger.propagate = False
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter('always')
+            try:
+                self.parsed = MathTextParser('path').parse(
+                    '$' + latex + '$', dpi=72,
+                    prop=FontProperties(size=self.font_size, math_fontfamily='dejavusans'))
+            except (ValueError, RuntimeError) as error:
+                raise ValueError(f'Unsupported mathematical expression: {latex}. '
+                                 'Rewrite it in supported MathText LaTeX or use a verified vector source crop.') from error
+            finally:
+                math_logger.removeHandler(handler)
+                math_logger.propagate = previous_propagation
+            if caught or log_buffer.getvalue():
+                details = '; '.join(str(w.message) for w in caught) + log_buffer.getvalue().strip()
+                raise ValueError('Mathematical typesetting emitted a warning or missing glyph: ' + details)
+        self.width = float(self.parsed.width)
+        self.height = float(self.parsed.height) + 12
+
+    def wrap(self, available_width, available_height):
+        if self.width > available_width:
+            raise LayoutError('Formula exceeds its available width; split the derivation into separate formulas. Font size is preserved.')
+        return self.width, self.height
+
+    def draw(self):
+        c = self.canv
+        c.saveState()
+        c.setFillColor(C['ink'])
+        baseline = float(self.parsed.depth) + 6
+        for glyph in self.parsed.glyphs:
+            # Matplotlib 3.8-3.10 expose five entries; newer releases add a glyph index.
+            font, size, char, x, y = glyph[0], glyph[1], glyph[2], glyph[-2], glyph[-1]
+            font.set_size(size, 72)
+            font.load_char(char, flags=LoadFlags.NO_HINTING)
+            vertices, codes = font.get_path()
+            outline = MathPath(vertices, codes)
+            path = c.beginPath()
+            for points, command in outline.iter_segments(curves=True):
+                if command == MathPath.MOVETO:
+                    path.moveTo(x + points[0], baseline + y + points[1])
+                elif command == MathPath.LINETO:
+                    path.lineTo(x + points[0], baseline + y + points[1])
+                elif command == MathPath.CURVE3:
+                    # Quadratic Bezier -> cubic Bezier, preserving the glyph outline.
+                    end_x, end_y = x + points[2], baseline + y + points[3]
+                    control_x, control_y = x + points[0], baseline + y + points[1]
+                    path.curveTo(current_x + 2 / 3 * (control_x - current_x),
+                                 current_y + 2 / 3 * (control_y - current_y),
+                                 end_x + 2 / 3 * (control_x - end_x),
+                                 end_y + 2 / 3 * (control_y - end_y), end_x, end_y)
+                elif command == MathPath.CURVE4:
+                    path.curveTo(x + points[0], baseline + y + points[1],
+                                 x + points[2], baseline + y + points[3],
+                                 x + points[4], baseline + y + points[5])
+                elif command == MathPath.CLOSEPOLY:
+                    path.close()
+                if command in (MathPath.MOVETO, MathPath.LINETO):
+                    current_x, current_y = x + points[0], baseline + y + points[1]
+                elif command == MathPath.CURVE3:
+                    current_x, current_y = end_x, end_y
+                elif command == MathPath.CURVE4:
+                    current_x, current_y = x + points[4], baseline + y + points[5]
+            c.drawPath(path, stroke=0, fill=1)
+        for x, y, width, height in self.parsed.rects:
+            c.rect(float(x), baseline + float(y), float(width), float(height), stroke=0, fill=1)
+        c.restoreState()
+
+
 def plain_filename(value, field):
     if (not isinstance(value, str) or not value.strip() or value in ('.', '..')
             or any(char in value for char in '/\\')
@@ -245,7 +379,7 @@ def configure_style(path=None):
                 raise ValueError(f'Style {key} must be a six-digit hexadecimal color, e.g. #17334D.')
         elif isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
             raise ValueError(f'Style {key} must be a finite positive number.')
-    for prefix in ('guide', 'bilingual'):
+    for prefix in ('guide', 'bilingual', 'annotation'):
         if values[f'{prefix}_body_leading'] < values[f'{prefix}_body_size']:
             raise ValueError(f'{prefix}_body_leading must be at least {prefix}_body_size.')
     TOKENS = values
@@ -284,9 +418,9 @@ def make_styles():
     common = dict(fontName='StudyCN', wordWrap='CJK', textColor=C['ink'])
     return {
         'body': ParagraphStyle('body', fontSize=TOKENS['guide_body_size'],
-            leading=TOKENS['guide_body_leading'], spaceAfter=7, **common),
+            leading=TOKENS['guide_body_leading'], spaceAfter=10, **common),
         'heading': ParagraphStyle('heading', fontSize=13.2, leading=20,
-            spaceBefore=6, spaceAfter=7, **{**common, 'textColor': C['teal']}),
+            spaceBefore=12, spaceAfter=9, **{**common, 'textColor': C['teal']}),
         'small': ParagraphStyle('small', fontSize=9.1, leading=14.4,
             spaceAfter=6, **{**common, 'textColor': C['muted']}),
         'title': ParagraphStyle('title', fontSize=21, leading=29,
@@ -300,6 +434,8 @@ def make_styles():
             alignment=1, spaceAfter=8, **common),
         'translation': ParagraphStyle('translation', fontSize=TOKENS['bilingual_body_size'],
             leading=TOKENS['bilingual_body_leading'], spaceAfter=12, **common),
+        'annotation': ParagraphStyle('annotation', fontSize=TOKENS['annotation_body_size'],
+            leading=TOKENS['annotation_body_leading'], spaceAfter=6, **common),
     }
 
 
@@ -315,9 +451,9 @@ def para(text, styles, kind='body'):
 
 def draw_item(c, item, x, top, width, floor=56, context='page'):
     top -= getattr(getattr(item, 'style', None), 'spaceBefore', 0)
-    _, height = item.wrap(width, max(1, top - floor))
-    if top - height < floor:
-        raise LayoutError(f'{context}: content overflow; split guide content or enlarge/reflow bilingual layout. Do not omit text.')
+    measured_width, height = item.wrap(width, max(1, top - floor))
+    if measured_width > width + .01 or top - height < floor:
+        raise LayoutError(f'{context}: content overflow; split guide content or increase the annotation/page dimensions. Preserve text and font sizes.')
     item.drawOn(c, x, top - height)
     return top - height - getattr(getattr(item, 'style', None), 'spaceAfter', 0)
 
@@ -341,6 +477,22 @@ def table(header, rows, width, styles, ratios=None):
         style.append(('BACKGROUND', (0, 0), (-1, 0), C['navy']))
     t.setStyle(TableStyle(style))
     return t
+
+
+def symbol_table(rows, width, styles):
+    if not isinstance(rows, list) or any(not isinstance(row, (list, tuple)) or len(row) != 2 for row in rows):
+        raise ValueError('formula.symbols must be pairs of LaTeX symbol and explanatory text.')
+    data = [[para('Symbol', styles, 'th'), para('Meaning in this step', styles, 'th')]]
+    data.extend([[MathFormula(symbol, 13), para(definition, styles, 'table')] for symbol, definition in rows])
+    result = Table(data, colWidths=[width / 4, width * 3 / 4], hAlign='LEFT')
+    result.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BACKGROUND', (0, 0), (-1, 0), C['navy']),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, C['stripe']]),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10), ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+        ('TOPPADDING', (0, 0), (-1, -1), 6), ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LINEBELOW', (0, 0), (-1, -1), .3, C['line'])]))
+    return result
 
 
 def box(label, text, width, styles, tone='green'):
@@ -375,8 +527,28 @@ def furniture(c, width, height, margin, spec, number, total, kind, styles):
 
 def guide_blocks(block, width, styles, placements):
     kind = block['type']
-    if kind in ('text', 'heading', 'small', 'formula'):
+    if kind in ('text', 'heading', 'small'):
         return [para(block['text'], styles, 'body' if kind == 'text' else kind)]
+    if kind == 'formula':
+        if 'text' in block:
+            raise ValueError('formula.text is no longer accepted. Use formula.latex for stacked fractions and scripts.')
+        if not isinstance(block.get('reason'), str) or not block['reason'].strip():
+            raise ValueError('Every formula requires a nearby reason explaining why this step follows.')
+        result = []
+        if block.get('label'):
+            result.append(para(block['label'], styles, 'heading'))
+        result.extend([MathFormula(block.get('latex')), Spacer(1, 4), para(block['reason'], styles)])
+        if block.get('symbols'):
+            result.extend([symbol_table(block['symbols'], width, styles), Spacer(1, 10)])
+        return result
+    if kind == 'concept':
+        if not block.get('title') or not block.get('blocks'):
+            raise ValueError('A concept group requires a title and nonempty blocks.')
+        result = [para(block['title'], styles, 'heading')]
+        for child in block['blocks']:
+            result.extend(guide_blocks(child, width, styles, placements))
+        result.append(Spacer(1, TOKENS['concept_gap']))
+        return result
     if kind == 'box':
         return [box(block['label'], block['text'], width, styles, block.get('tone', 'green')), Spacer(1, 7)]
     if kind == 'table':
@@ -424,52 +596,127 @@ def render_guide(spec, path, styles):
     merge_sources(path, placements)
 
 
-def render_bilingual(spec, path, styles):
-    source = Path(spec['source_pdf']).resolve()
+def page_dimensions(path, number):
+    _, (left, bottom, right, top) = source_page(path, number)
+    return right - left, top - bottom
+
+
+def bilingual_geometry(spec):
+    """Validate pairs and return auditable viewport coordinates in PDF points."""
+    source = local_input(spec.get('source_pdf'), 'source_pdf')
     original = PdfReader(io.BytesIO(source.read_bytes()))
+    if original.is_encrypted:
+        raise ValueError('Use an unlocked local copy of the source PDF.')
     pages = spec['bilingual']
-    labels = spec['labels']
-    if not pages or [p['source_page'] for p in pages] != list(range(1, len(original.pages) + 1)):
+    if not isinstance(pages, list) or not pages or [p.get('source_page') for p in pages] != list(range(1, len(original.pages) + 1)):
         raise ValueError('bilingual must list every source page exactly once in original order (1..N).')
-    w, h, m, lw, rx = 1190.551, 841.89, 36, 540, 608
-    rw = w - rx - m
+    mode = spec.get('bilingual_mode', 'paired_pdf')
+    if mode not in ('paired_pdf', 'reflow'):
+        raise ValueError('bilingual_mode must be paired_pdf or explicit reflow.')
+    translated = None
+    if mode == 'paired_pdf':
+        if not spec.get('translated_pdf'):
+            raise ValueError('Exact-layout bilingual mode requires translated_pdf, a layout-matched PDF with one translated page per source page. Legacy translation arrays require explicit bilingual_mode="reflow", which is labeled as a layout-different fallback.')
+        translated = local_input(spec['translated_pdf'], 'translated_pdf')
+        translated_reader = PdfReader(io.BytesIO(translated.read_bytes()))
+        if translated_reader.is_encrypted or original.is_encrypted:
+            raise ValueError('Use unlocked local copies of both PDFs.')
+        if len(translated_reader.pages) != len(original.pages):
+            raise ValueError('Source and translated PDFs must have identical page counts.')
+        if any('translation' in page for page in pages):
+            raise ValueError('Paired-PDF mode uses translated_pdf. Move all translation text into its matched slide layouts; put supplementary explanations in notes.')
+    elif spec.get('translated_pdf'):
+        raise ValueError('reflow mode accepts translation arrays; omit translated_pdf or select paired_pdf.')
+    layout = spec.get('bilingual_layout', {})
+    if not isinstance(layout, dict) or layout.keys() - {'page_width', 'page_height', 'annotation_height'}:
+        raise ValueError('bilingual_layout accepts only page_width, page_height, and annotation_height.')
+    values = {'page_width': 1190.551, 'page_height': 841.89, 'annotation_height': 200, **layout}
+    for name, value in values.items():
+        if isinstance(value, bool) or not isinstance(value, (float, int)) or not math.isfinite(value) or value <= 0:
+            raise ValueError(f'bilingual_layout.{name} must be a finite positive number.')
+    width, height, annotation_height = values.values()
+    margin, gap, floor = 36, 32, 75
+    viewport_width = (width - 2 * margin - gap) / 2
+    annotation_top = floor + annotation_height
+    viewport_top = height - 128
+    viewport_height = viewport_top - annotation_top - 20
+    if viewport_width < 72 or viewport_height < 72:
+        raise LayoutError('Bilingual page dimensions leave insufficient space for equal slide viewports. Increase the page size or reduce annotation_height without shrinking annotation text.')
+    report = []
+    for number in range(1, len(pages) + 1):
+        sw, sh = page_dimensions(source, number)
+        if translated:
+            tw, th = page_dimensions(translated, number)
+            if abs(sw - tw) > .01 or abs(sh - th) > .01:
+                raise ValueError(f'Page {number}: source and translated visible dimensions must match after rotation and UserUnit normalization; got {sw:g} x {sh:g} and {tw:g} x {th:g} points.')
+        scale = min(viewport_width / sw, viewport_height / sh)
+        left = {'x': margin, 'y': annotation_top + 20, 'width': viewport_width, 'height': viewport_height}
+        right = {**left, 'x': margin + viewport_width + gap}
+        report.append({'source_page': number, 'source_dimensions': [sw, sh], 'scale': scale,
+                       'left_viewport': left, 'right_viewport': right,
+                       'annotation_band': {'x': margin, 'y': floor, 'width': width - 2 * margin, 'height': annotation_height}})
+    return source, translated, mode, values, report
+
+
+def annotation_items(page, width, styles, labels):
+    if page.get('terms'):
+        yield para('<b>' + escape(labels['terms_heading']) + '</b>', styles, 'annotation')
+        yield table(None, page['terms'], width, styles, [1, 3])
+        yield Spacer(1, 6)
+    for field in ('notes', 'transcript', 'homework'):
+        for note in page.get(field, []):
+            if not note.get('label') or not note.get('text'):
+                raise ValueError(f'{field} entries require a label and text.')
+            body = '<b>' + escape(note['label']) + ':</b> ' + note['text']
+            if note.get('source'):
+                body += ' <i>(' + escape(note['source']) + ')</i>'
+            yield para(body, styles, 'annotation')
+
+
+def render_bilingual(spec, path, styles):
+    source, translated, mode, layout, report = bilingual_geometry(spec)
+    pages, labels = spec['bilingual'], spec['labels']
+    w, h, m = layout['page_width'], layout['page_height'], 36
     c = canvas.Canvas(str(path), pagesize=(w, h))
     c.setTitle(f"{spec.get('course_code', '')} {spec.get('lecture', '')} {labels['bilingual_name']}")
     placements = []
-    for number, page in enumerate(pages, 1):
-        c.bookmarkPage(f'p{number}'); c.addOutlineEntry(page['title_zh'], f'p{number}', level=0)
+    for number, (page, geometry) in enumerate(zip(pages, report), 1):
+        title = page.get('title') or page.get('title_zh') or page.get('title_en') or f'Slide {number}'
+        c.bookmarkPage(f'p{number}'); c.addOutlineEntry(title, f'p{number}', level=0)
         furniture(c, w, h, m, spec, number, len(pages), labels['bilingual_header'], styles)
-        top = draw_item(c, para(page['title_zh'], styles, 'title'), m, h - 57, w - 2 * m)
-        if page.get('title_en'):
-            top = draw_item(c, para(escape(page['title_en']), styles, 'subtitle'), m, top - 4, w - 2 * m)
-        top -= 14
-        draw_item(c, para(escape(labels['source_heading']), styles, 'heading'), m, top, lw)
-        draw_item(c, para(escape(labels['translation_heading']), styles, 'heading'), rx, top, rw)
-        top -= 34
-        viewport_h = 405
+        draw_item(c, para(title, styles, 'title'), m, h - 57, w - 2 * m, floor=h - 100,
+                  context=f'Bilingual title page {number}')
+        for heading, viewport in ((labels['source_heading'], geometry['left_viewport']),
+                                  (labels['translation_heading'], geometry['right_viewport'])):
+            draw_item(c, para(escape(heading), styles, 'annotation'), viewport['x'],
+                      viewport['y'] + viewport['height'] + 22, viewport['width'],
+                      floor=viewport['y'] + viewport['height'] + 2, context=f'Slide heading page {number}')
+            c.setStrokeColor(C['line'])
+            c.rect(viewport['x'] - 1, viewport['y'] - 1, viewport['width'] + 2, viewport['height'] + 2)
         placements.append({'page': number - 1, 'source_pdf': source, 'source_page': number,
-                           'x': m, 'y': top - viewport_h, 'width': lw, 'height': viewport_h})
-        c.setStrokeColor(C['line']); c.rect(m - 1, top - viewport_h - 1, lw + 2, viewport_h + 2)
-        left_top = draw_item(c, para(escape(labels['terms_heading']), styles, 'heading'), m,
-            top - viewport_h - 14, lw, floor=68, context=f'Bilingual terms page {number}')
-        if page.get('terms'):
-            draw_item(c, table(None, page['terms'], lw, styles, [1.2, 1]), m, left_top, lw,
-                floor=68, context=f'Bilingual terms page {number}')
-        right_top = top
-        if not page.get('translation'):
-            raise ValueError(f'Missing translation on page {number}; annotate unreadable source explicitly.')
-        for text in page['translation']:
-            right_top = draw_item(c, para(text, styles, 'translation'), rx, right_top, rw,
-                floor=75, context=f'Bilingual translation page {number}')
-        for note in page.get('notes', []):
-            body = note['text']
-            if note.get('source'):
-                body += '<br/>' + escape(note['source'])
-            right_top = draw_item(c, box(note['label'], body, rw, styles, note.get('tone', 'green')),
-                rx, right_top - 7, rw, floor=75, context=f'Bilingual note page {number}')
+                           'scale': geometry['scale'], **geometry['left_viewport']})
+        if mode == 'paired_pdf':
+            placements.append({'page': number - 1, 'source_pdf': translated, 'source_page': number,
+                               'scale': geometry['scale'], **geometry['right_viewport']})
+        else:
+            right = geometry['right_viewport']
+            top = draw_item(c, para('<b>Reflow fallback - layout differs from source</b>', styles, 'annotation'),
+                            right['x'], right['y'] + right['height'], right['width'], right['y'])
+            if not page.get('translation'):
+                raise ValueError(f'Reflow page {number} requires a nonempty translation array.')
+            for text in page['translation']:
+                top = draw_item(c, para(text, styles, 'translation'), right['x'], top,
+                                right['width'], right['y'], context=f'Reflow translation page {number}')
+        band = geometry['annotation_band']
+        c.setStrokeColor(C['line']); c.line(m, band['y'] + band['height'] + 6, w - m, band['y'] + band['height'] + 6)
+        top = band['y'] + band['height']
+        for item in annotation_items(page, band['width'], styles, labels):
+            top = draw_item(c, item, m, top, band['width'], floor=band['y'], context=f'Annotation band page {number}')
         c.setFont('StudyCN', 9); c.setFillColor(C['muted'])
         footer = labels['source_footer'].format(filename=source.name, page=number)
         require_glyphs(footer)
+        if pdfmetrics.stringWidth(footer, 'StudyCN', 9) > (w - 2 * m) * .65:
+            raise LayoutError('Source footer exceeds available space; shorten its label or filename.')
         c.drawString(m, 57, footer)
         if page.get('guide_pages'):
             reference = labels['guide_reference_footer'].format(pages=page['guide_pages'])
@@ -478,7 +725,33 @@ def render_bilingual(spec, path, styles):
         c.showPage()
     c.save()
     merge_sources(path, placements)
+    return {'mode': mode, 'pages': report,
+            'layout_fidelity_review_required': mode == 'paired_pdf',
+            'geometry_checks_are_not_content_fidelity_proof': True}
 
+
+def publish_outputs(outputs, inputs, work):
+    """Publish after every render passes, restoring previous files on failure."""
+    backups, published = {}, []
+    try:
+        for index, item in enumerate(outputs):
+            final = Path(item['path'])
+            protect_inputs(final, inputs)
+            if final.exists():
+                backup = Path(work) / f'backup-{index}.pdf'
+                backup.write_bytes(final.read_bytes())
+                backups[final] = backup
+            os.replace(item['stage'], final)
+            published.append(final)
+    except BaseException:
+        for final in reversed(published):
+            if final in backups:
+                os.replace(backups[final], final)
+            else:
+                final.unlink(missing_ok=True)
+        raise
+    for item in outputs:
+        item.pop('stage')
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -517,12 +790,12 @@ def main():
             if key == 'guide':
                 render_guide(spec, stage, styles)
             else:
-                render_bilingual(spec, stage, styles)
+                positioning = render_bilingual(spec, stage, styles)
             doc = PdfReader(io.BytesIO(stage.read_bytes()))
             outputs.append({'kind': key, 'path': str(final), 'pages': len(doc.pages), 'stage': str(stage)})
-        for item in outputs:
-            protect_inputs(Path(item['path']), inputs)
-            os.replace(item.pop('stage'), item['path'])
+            if key == 'bilingual':
+                outputs[-1]['positioning'] = positioning
+        publish_outputs(outputs, inputs, work)
     print(json.dumps({'outputs': outputs, 'visual_review_required': True}, ensure_ascii=False))
 
 

@@ -14,29 +14,29 @@ def verify(root):
     root = root.resolve()
     manifest = root / "assets" / "manifest.sha256"
     if manifest.is_symlink() or not manifest.is_file():
-        return ["缺少有效的 assets/manifest.sha256。"]
+        return ["Missing a valid assets/manifest.sha256."]
     errors = []
     entries = set()
     for line in manifest.read_text(encoding="utf-8").splitlines():
         match = re.fullmatch(r"([0-9a-f]{64})  (.+)", line)
         if not match:
-            errors.append("校验清单格式无效。")
+            errors.append("Invalid checksum manifest format.")
             continue
         expected, name = match.groups()
         relative = PurePosixPath(name)
         if relative.is_absolute() or ".." in relative.parts or "\\" in name or name in entries:
-            errors.append(f"无效的清单路径：{name}")
+            errors.append(f"Invalid manifest path: {name}")
             continue
         entries.add(name)
         path = root.joinpath(*relative.parts)
         if any(p.is_symlink() for p in (path, *path.parents) if p != root and root in p.parents):
-            errors.append(f"不是发布包中的普通文件：{name}")
+            errors.append(f"Not a regular package file: {name}")
         elif not path.is_file():
-            errors.append(f"缺少文件：{name}")
+            errors.append(f"Missing file: {name}")
         elif hashlib.sha256(path.read_bytes()).hexdigest() != expected:
-            errors.append(f"文件已更改：{name}")
+            errors.append(f"File changed: {name}")
     if not entries:
-        errors.append("校验清单为空。")
+        errors.append("Checksum manifest is empty.")
     return errors
 
 
@@ -45,12 +45,12 @@ def main():
     try:
         errors = verify(root)
     except (OSError, UnicodeError) as error:
-        errors = [f"无法完成校验：{error}"]
+        errors = [f"Could not complete verification: {error}"]
     if errors:
-        print("校验未通过：\n" + "\n".join(f"- {error}" for error in errors))
+        print("Verification failed:\n" + "\n".join(f"- {error}" for error in errors))
         return 1
-    print("校验通过：清单中列出的所有文件均完整且一致。")
-    print("此检查不验证清单本身的来源；请从作者仓库获取发布包。")
+    print("Verification passed: all manifest-listed files are intact.")
+    print("This check does not authenticate the manifest; obtain releases from the author repository.")
     return 0
 
 

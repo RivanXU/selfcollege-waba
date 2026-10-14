@@ -1,0 +1,17 @@
+{
+  "authorship": "Original demo authored for selfcollege-waba; no private course content",
+  "slide_layout": "Shared renderer, fixed text origins, identical graphs and formulas",
+  "content_operator_geometry_equal": true,
+  "pdf_pages": {
+    "source-slides.pdf": 3,
+    "translated-slides.pdf": 3,
+    "slide-companion.pdf": 3,
+    "beginner-study-guide.pdf": 8
+  },
+  "rendered_pages": 17,
+  "homework": "Exact authored question embedded on study-guide page 6; solution pages 6-7",
+  "formula_rendering": "Vector glyph outlines and horizontal fraction rules; no formula bitmap",
+  "visual_review_status": "completed for this build",
+  "visual_review_required": false,
+  "visual_review_scope": "All 17 pages inspected for clipping, overlap, readability, fraction typesetting, symbol placement, source/mirror fidelity and bottom annotations"
+}

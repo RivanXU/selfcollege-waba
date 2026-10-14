@@ -16,6 +16,7 @@ import os
 import re
 import string
 import tempfile
+import unicodedata
 import warnings
 from html.parser import HTMLParser
 from pathlib import Path
@@ -42,6 +43,8 @@ DEFAULT_LABELS = {
     'source_heading': 'Source slide',
     'translation_heading': 'Translated slide',
     'terms_heading': 'Vocabulary',
+    'symbol_heading': 'Symbol',
+    'symbol_meaning_heading': 'Meaning in this step',
     'guide_name': 'study-guide',
     'bilingual_name': 'slide-companion',
     'guide_header': 'Study guide',
@@ -57,13 +60,18 @@ class LayoutError(ValueError):
 
 def require_glyphs(text):
     """Fail before publication instead of silently drawing missing characters."""
+    text = str(text)
+    if any(unicodedata.bidirectional(char) in {'R', 'AL', 'RLE', 'RLO', 'RLI'} for char in text):
+        raise ValueError('Right-to-left text requires a shaping-aware typesetting engine. '
+                         'A font override alone cannot provide correct direction or joined glyphs; '
+                         'use a verified local PDF from a capable engine.')
     glyphs = pdfmetrics.getFont('StudyCN').face.charToGlyph
-    missing = sorted({char for char in str(text)
+    missing = sorted({char for char in text
                       if char not in '\n\r\t' and not glyphs.get(ord(char))})
     if missing:
         details = ', '.join(f'{char!r} (U+{ord(char):04X})' for char in missing)
         raise ValueError(f'Font is missing characters: {details}. '
-                         'Use --font with a font covering these characters, or render '
+                         'Use --font with a font covering these characters, or '
                          'use a formula block with LaTeX for mathematics. '
                          'Do not replace or omit source symbols.')
 
@@ -163,6 +171,16 @@ def source_page(path, number, clip=None):
         raise ValueError('Use an unlocked local copy of the source PDF.')
     if isinstance(number, bool) or not isinstance(number, int) or not 1 <= number <= len(reader.pages):
         raise ValueError('Source PDF page must be an integer in the document page range.')
+    for reference in reader.pages[number - 1].get('/Annots', []):
+        annotation = reference.get_object()
+        flags = int(annotation.get('/F', 0))
+        # Links have no teaching appearance. Other visible annotations can contain
+        # instructor handwriting, highlights, comments, stamps, or form values.
+        if annotation.get('/Subtype') != '/Link' and not flags & (1 | 2 | 32):
+            raise ValueError(f'Source page {number} contains a visible annotation '
+                             f'({annotation.get("/Subtype", "unknown type")}). Flatten '
+                             'legitimate annotations in a separate verified copy before '
+                             'composition; otherwise instructor material could be lost.')
     # Attach the page to a writer before changing its content stream or boxes.
     # This also isolates normalization from the caller's original document.
     working = PdfWriter()
@@ -302,7 +320,7 @@ class MathFormula(Flowable):
                 details = '; '.join(str(w.message) for w in caught) + log_buffer.getvalue().strip()
                 raise ValueError('Mathematical typesetting emitted a warning or missing glyph: ' + details)
         self.width = float(self.parsed.width)
-        self.height = float(self.parsed.height) + 12
+        self.height = float(self.parsed.height) + 6
 
     def wrap(self, available_width, available_height):
         if self.width > available_width:
@@ -313,7 +331,7 @@ class MathFormula(Flowable):
         c = self.canv
         c.saveState()
         c.setFillColor(C['ink'])
-        baseline = float(self.parsed.depth) + 6
+        baseline = float(self.parsed.depth) + 3
         for glyph in self.parsed.glyphs:
             # Matplotlib 3.8-3.10 expose five entries; newer releases add a glyph index.
             font, size, char, x, y = glyph[0], glyph[1], glyph[2], glyph[-2], glyph[-1]
@@ -382,6 +400,10 @@ def configure_style(path=None):
     for prefix in ('guide', 'bilingual', 'annotation'):
         if values[f'{prefix}_body_leading'] < values[f'{prefix}_body_size']:
             raise ValueError(f'{prefix}_body_leading must be at least {prefix}_body_size.')
+    if not values['guide_body_size'] <= values['formula_size'] <= values['guide_body_size'] * 1.5:
+        raise ValueError('formula_size must be between the guide body size and 1.5 times '
+                         'that size. Keep display mathematics proportionate to the text; '
+                         'split long expressions rather than changing one formula to fit.')
     TOKENS = values
     C = {key: colors.HexColor(value) for key, value in values.items() if isinstance(value, str)}
 
@@ -462,9 +484,11 @@ def table(header, rows, width, styles, ratios=None):
     count = len(header) if header else (len(rows[0]) if rows else 0)
     if not count or any(len(row) != count for row in rows):
         raise ValueError('Table must contain consistently sized rows.')
-    ratios = ratios or [1] * count
-    if len(ratios) != count or any(v <= 0 for v in ratios):
-        raise ValueError('Table widths must be positive and match its columns.')
+    ratios = [1] * count if ratios is None else ratios
+    if (not isinstance(ratios, (list, tuple)) or len(ratios) != count
+            or any(isinstance(v, bool) or not isinstance(v, (int, float))
+                   or not math.isfinite(v) or v <= 0 for v in ratios)):
+        raise ValueError('Table widths must be finite positive numbers and match its columns.')
     data = ([[para(x, styles, 'th') for x in header]] if header else [])
     data += [[para(x, styles, 'table') for x in row] for row in rows]
     t = Table(data, colWidths=[width * v / sum(ratios) for v in ratios], hAlign='LEFT')
@@ -479,11 +503,14 @@ def table(header, rows, width, styles, ratios=None):
     return t
 
 
-def symbol_table(rows, width, styles):
+def symbol_table(rows, width, styles, labels=None):
     if not isinstance(rows, list) or any(not isinstance(row, (list, tuple)) or len(row) != 2 for row in rows):
         raise ValueError('formula.symbols must be pairs of LaTeX symbol and explanatory text.')
-    data = [[para('Symbol', styles, 'th'), para('Meaning in this step', styles, 'th')]]
-    data.extend([[MathFormula(symbol, 13), para(definition, styles, 'table')] for symbol, definition in rows])
+    labels = labels or DEFAULT_LABELS
+    data = [[para(labels['symbol_heading'], styles, 'th'),
+             para(labels['symbol_meaning_heading'], styles, 'th')]]
+    data.extend([[MathFormula(symbol, styles['table'].fontSize * 1.2),
+                  para(definition, styles, 'table')] for symbol, definition in rows])
     result = Table(data, colWidths=[width / 4, width * 3 / 4], hAlign='LEFT')
     result.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -512,20 +539,30 @@ def furniture(c, width, height, margin, spec, number, total, kind, styles):
     c.setFont('StudyCN', 8.5)
     header = f"{spec.get('course_code', '')} / {spec.get('lecture', '')}"
     require_glyphs(header); require_glyphs(kind)
+    usable = width - 2 * margin
+    if (pdfmetrics.stringWidth(header, 'StudyCN', 8.5)
+            + pdfmetrics.stringWidth(kind, 'StudyCN', 8.5) + 12 > usable):
+        raise LayoutError('Header exceeds available space; shorten course_code, lecture, '
+                          'or the header label. Keep the full title in the page body.')
     c.drawString(margin, height - 32, header)
     c.setFillColor(C['muted']); c.drawRightString(width - margin, height - 32, kind)
     c.setStrokeColor(C['line']); c.line(margin, height - 43, width - margin, height - 43)
     c.line(margin, 40, width - margin, 40)
     c.setFont('StudyCN', 8)
+    counter = f'{number:02d} / {total:02d}'
+    footer_space = usable - pdfmetrics.stringWidth(counter, 'StudyCN', 8) - 12
     footer = spec.get('course_name', '')
-    if pdfmetrics.stringWidth(footer, 'StudyCN', 8) > width - 2 * margin - 65:
+    if pdfmetrics.stringWidth(footer, 'StudyCN', 8) > footer_space:
         footer = spec.get('course_code', '')
     require_glyphs(footer)
+    if pdfmetrics.stringWidth(footer, 'StudyCN', 8) > footer_space:
+        raise LayoutError('Course footer exceeds available space; shorten course_name '
+                          'or course_code without changing the body title.')
     c.drawString(margin, 25, footer)
-    c.drawRightString(width - margin, 25, f'{number:02d} / {total:02d}')
+    c.drawRightString(width - margin, 25, counter)
 
 
-def guide_blocks(block, width, styles, placements):
+def guide_blocks(block, width, styles, placements, labels=None):
     kind = block['type']
     if kind in ('text', 'heading', 'small'):
         return [para(block['text'], styles, 'body' if kind == 'text' else kind)]
@@ -539,14 +576,14 @@ def guide_blocks(block, width, styles, placements):
             result.append(para(block['label'], styles, 'heading'))
         result.extend([MathFormula(block.get('latex')), Spacer(1, 4), para(block['reason'], styles)])
         if block.get('symbols'):
-            result.extend([symbol_table(block['symbols'], width, styles), Spacer(1, 10)])
+            result.extend([symbol_table(block['symbols'], width, styles, labels), Spacer(1, 10)])
         return result
     if kind == 'concept':
         if not block.get('title') or not block.get('blocks'):
             raise ValueError('A concept group requires a title and nonempty blocks.')
         result = [para(block['title'], styles, 'heading')]
         for child in block['blocks']:
-            result.extend(guide_blocks(child, width, styles, placements))
+            result.extend(guide_blocks(child, width, styles, placements, labels))
         result.append(Spacer(1, TOKENS['concept_gap']))
         return result
     if kind == 'box':
@@ -589,7 +626,7 @@ def render_guide(spec, path, styles):
                 top = draw_item(c, para(escape(page[name]), styles, 'small'), m, top - 6, w - 2 * m)
         top -= 10
         for block in page['blocks']:
-            for item in guide_blocks(block, w - 2 * m, styles, placements):
+            for item in guide_blocks(block, w - 2 * m, styles, placements, spec['labels']):
                 top = draw_item(c, item, m, top, w - 2 * m, context=f'Guide page {number}')
         c.showPage()
     c.save()
@@ -721,6 +758,10 @@ def render_bilingual(spec, path, styles):
         if page.get('guide_pages'):
             reference = labels['guide_reference_footer'].format(pages=page['guide_pages'])
             require_glyphs(reference)
+            if (pdfmetrics.stringWidth(footer, 'StudyCN', 9)
+                    + pdfmetrics.stringWidth(reference, 'StudyCN', 9) + 12 > w - 2 * m):
+                raise LayoutError('Guide reference footer exceeds available space; '
+                                  'use compact page ranges or move detailed locators to the annotation band.')
             c.drawRightString(w - m, 57, reference)
         c.showPage()
     c.save()

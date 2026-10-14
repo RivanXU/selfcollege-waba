@@ -4,7 +4,7 @@
 
 ## Read, map, then teach
 
-Inspect the entire requested lecture before drafting individual explanations. Read text and rendered pages together: OCR commonly loses superscripts, minus signs, Greek letters, table boundaries, or plot labels. Record the file/version, physical page, topic, new assumptions, notation, examples, figures, transcript matches, homework links, and planned guide module. Preserve all source pages in the companion, including repeats.
+Inspect the entire requested lecture before drafting individual explanations. Read text and rendered pages together: OCR commonly loses superscripts, minus signs, Greek letters, table boundaries, or plot labels. Record the file/version, physical page, topic, new assumptions, notation, examples, figures, transcript matches, homework links, and planned guide module. For a lecture pack or revision, copy the [acceptance ledger template](acceptance-ledger-template.md) into the course workspace and maintain its actual page/question mappings through delivery. Preserve all source pages in the companion, including repeats.
 
 State the lecture's central question in ordinary language. Identify the path by which its slides answer it. Group consecutive pages by one meaningful question or reasoning task; do not isolate every formula or silently reorder the course by a dependency map. A module spanning several slides teaches their connected argument and accounts for each slide's additions.
 
@@ -59,6 +59,8 @@ Explain axes, units, legends, labels, regions, arrows, conditions, and reading o
 | Uncertain / conflict | Unreadable, missing, or conflicting evidence | Exact gap and consequence. |
 
 Source typos stay visible in the original and translated pair; supported corrections belong in the bottom notes and guide. Shared citations can be grouped at module/paragraph boundaries so the learner can follow the argument without repeated interruptions.
+
+Check source conclusions against the source's own assumptions, including special-case qualifiers. For example, a claimed one-for-one response may require another component to stay fixed; if the model also lets that component respond, derive the combined adjustment before accepting the claim. Preserve the original statement, explain the conflict and calculation in a correction note, and distinguish a typo from an unresolved interpretation.
 
 ## Classroom transcripts
 

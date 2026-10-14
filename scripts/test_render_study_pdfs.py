@@ -15,7 +15,7 @@ import unittest
 from unittest.mock import patch
 
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import ContentStream, FloatObject, NameObject
+from pypdf.generic import ArrayObject, ContentStream, DictionaryObject, FloatObject, NameObject, NumberObject, TextStringObject
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
@@ -214,6 +214,84 @@ class RendererTests(unittest.TestCase):
             renderer.protect_inputs(alias, [self.source])
         with self.assertRaisesRegex(ValueError, 'not a URL'):
             renderer.local_input('https://example.com/source.pdf', 'source_pdf')
+
+    def test_header_and_course_footer_cannot_clip_or_collide(self):
+        c = canvas.Canvas(str(self.root / 'furniture.pdf'))
+        base = {'course_code': 'C101', 'lecture': 'Lecture', 'course_name': 'Course'}
+        for change in ({'lecture': 'Long lecture ' * 20}, {'course_code': 'Y' * 200}):
+            with self.assertRaisesRegex(renderer.LayoutError, 'Header'):
+                renderer.furniture(c, 595, 842, 47, {**base, **change}, 1, 1, 'Guide', self.styles)
+        renderer.furniture(c, 595, 842, 47, {**base, 'course_name': 'X' * 200}, 1, 1, 'Guide', self.styles)
+        c.save()
+        text = PdfReader(self.root / 'furniture.pdf').pages[0].extract_text()
+        self.assertNotIn('X' * 200, text)
+        self.assertIn('C101', text)
+
+    def test_guide_reference_footer_is_bounded_against_source_footer(self):
+        spec = self.paired()
+        spec['bilingual'][0]['guide_pages'] = ', '.join(str(n) for n in range(1, 250))
+        with self.assertRaisesRegex(renderer.LayoutError, 'Guide reference footer'):
+            renderer.render_bilingual(spec, self.root / 'references.pdf', self.styles)
+        spec['bilingual'][0]['guide_pages'] = '1-4'
+        renderer.render_bilingual(spec, self.root / 'compact-references.pdf', self.styles)
+
+    def test_symbol_labels_follow_language_inside_nested_concepts(self):
+        spec = {'labels': {'symbol_heading': '\u7b26\u53f7', 'symbol_meaning_heading': '\u672c\u6b65\u9aa4\u4e2d\u7684\u542b\u4e49'},
+                'guide': [{'title': '\u6bd4\u4f8b', 'blocks': [{'type': 'concept', 'title': '\u5b9a\u4e49', 'blocks': [
+                    {'type': 'formula', 'latex': r'r=\frac{a}{b}', 'reason': '\u7528\u53c2\u7167\u91cf\u6bd4\u8f83\u6570\u91cf\u3002',
+                     'symbols': [['r', '\u65e0\u91cf\u7eb2\u6bd4\u4f8b']]}]}]}]}
+        renderer.configure_labels(spec)
+        target = self.root / 'localized.pdf'
+        renderer.render_guide(spec, target, self.styles)
+        text = PdfReader(target).pages[0].extract_text()
+        self.assertIn('\u7b26\u53f7', text)
+        self.assertIn('\u672c\u6b65\u9aa4\u4e2d\u7684\u542b\u4e49', text)
+        self.assertNotIn('Meaning in this step', text)
+
+    def test_rtl_is_rejected_before_font_coverage_check(self):
+        with self.assertRaisesRegex(ValueError, 'shaping-aware'):
+            renderer.para('\u0627\u0644\u062c\u0627\u0645\u0639\u0629', self.styles)
+        with self.assertRaisesRegex(ValueError, 'shaping-aware'):
+            renderer.require_glyphs('English / \u05e2\u05d1\u05e8\u05d9\u05ea')
+
+    def test_visible_source_annotations_are_not_silently_lost(self):
+        writer = PdfWriter(clone_from=self.source)
+        annotation = DictionaryObject({NameObject('/Type'): NameObject('/Annot'),
+            NameObject('/Subtype'): NameObject('/FreeText'), NameObject('/Contents'): TextStringObject('Instructor correction'),
+            NameObject('/Rect'): ArrayObject([NumberObject(v) for v in (30, 30, 180, 70)])})
+        writer.add_annotation(0, annotation)
+        with self.source.open('wb') as stream:
+            writer.write(stream)
+        before = self.source.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'Flatten legitimate annotations'):
+            renderer.source_page(self.source, 1)
+        self.assertEqual(self.source.read_bytes(), before)
+        writer = PdfWriter(clone_from=self.source)
+        writer.pages[0]['/Annots'][0].get_object()[NameObject('/F')] = NumberObject(2)
+        with self.source.open('wb') as stream:
+            writer.write(stream)
+        renderer.source_page(self.source, 1)
+
+    def test_table_widths_require_finite_positive_nonboolean_numbers(self):
+        for widths in ([float('nan')], [float('inf')], [True], [0], []):
+            with self.assertRaisesRegex(ValueError, 'finite positive numbers'):
+                renderer.table(['Column'], [['Value']], 400, self.styles, widths)
+
+    def test_style_override_cannot_make_formulas_headline_sized_or_tiny(self):
+        override = self.root / 'style.json'
+        for size in (29, 6):
+            override.write_text(json.dumps({'formula_size': size}))
+            with self.assertRaisesRegex(ValueError, 'proportionate'):
+                renderer.configure_style(override)
+        override.write_text(json.dumps({'formula_size': 15}))
+        renderer.configure_style(override)
+        # A formula is actually rendered with the accepted course style.
+        target = self.root / 'proportionate.pdf'
+        c = canvas.Canvas(str(target))
+        renderer.MathFormula(r'\frac{a}{b}=c^2').drawOn(c, 40, 650)
+        c.save()
+        self.assertEqual(len(PdfReader(target).pages), 1)
+        renderer.configure_style()
 
 
 if __name__ == '__main__':

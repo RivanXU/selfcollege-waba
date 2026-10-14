@@ -88,6 +88,7 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/build_examples.py
 .venv/bin/python -m unittest discover -s scripts -p 'test_*.py'
+.venv/bin/python -m unittest discover -s tests -p 'test_*.py'
 ```
 
 Input structure, formula blocks, and rendering limitations are documented in [pdf-style.md](references/pdf-style.md). Translation, educational reasoning, and visual fidelity require review; automatic count/dimension checks do not prove content accuracy.
@@ -104,7 +105,7 @@ To build a distributable ZIP:
 python3 scripts/build_package.py --output-dir ../dist
 ```
 
-The checksum manifest detects changes to listed files; it is not a signature or proof of origin. Obtain the package from the author's repository.
+Verification checks required entrypoints, unlisted package additions, and checksums. Declared development/runtime directories such as `.git` and `.venv` are excluded. The manifest is not a signature or proof of origin. Obtain the package from the author's repository.
 
 ## Privacy, evidence, and continuity
 

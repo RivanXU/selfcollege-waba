@@ -24,7 +24,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
-from render_study_pdfs import MathFormula
+from render_study_pdfs import MathFormula, publish_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "examples"
@@ -59,7 +59,7 @@ def paragraph(c, text, x, top, width, style=BODY):
     return top - height
 
 
-def equation(c, latex, center_x, center_y, fontsize=25, max_width=None):
+def equation(c, latex, center_x, center_y, fontsize=15, max_width=None):
     formula = MathFormula(latex, fontsize)
     width, height = formula.width, formula.height
     if max_width is None and c._pagesize == (W, H):
@@ -265,18 +265,18 @@ def build_slides(kind):
         c.line(52, 363, 908, 363)
         if index == 1:
             slide_text(c, copy["body"], 56, 331, 17, leading=30)
-            equation(c, r"v(t)=v_0+a\,t", 271, 202, 29, 400)
+            equation(c, r"v(t)=v_0+a\,t", 271, 202, 21, 400)
             slide_text(c, ["v0 = initial velocity    a = acceleration    t = time"], 56, 142, 12, color=MUTED)
             graph(c, 530, 128, 372, 225)
         elif index == 2:
             slide_text(c, copy["body"], 56, 331, 17, leading=30)
-            equation(c, r"\bar{v}=\frac{v_0+v(t)}{2}", 271, 230, 27, 410)
-            equation(c, r"\Delta x=\bar{v}\,t", 271, 157, 27, 410)
+            equation(c, r"\bar{v}=\frac{v_0+v(t)}{2}", 271, 230, 21, 410)
+            equation(c, r"\Delta x=\bar{v}\,t", 271, 157, 21, 410)
             slide_text(c, ["v-bar = average velocity    delta x = displacement"], 56, 119, 11.4, color=MUTED)
             graph(c, 530, 128, 372, 225, shade=True)
         else:
-            equation(c, r"\Delta x=\frac{v_0+(v_0+a\,t)}{2}\,t", 479, 315, 29, 820)
-            equation(c, r"\Delta x=v_0\,t+\frac{1}{2}a\,t^2", 479, 229, 36, 820)
+            equation(c, r"\Delta x=\frac{v_0+(v_0+a\,t)}{2}\,t", 479, 315, 21, 820)
+            equation(c, r"\Delta x=v_0\,t+\frac{1}{2}a\,t^2", 479, 229, 21, 820)
             slide_text(c, copy["body"], 56, 160, 17, leading=29)
             slide_text(c, ["delta x = position change    v0 = initial velocity    a = acceleration    t = elapsed time"], 56, 112, 11.4, color=MUTED)
         c.setFillColor(PALE)
@@ -323,22 +323,23 @@ def build_guide():
     top = section(c, "1. A rate means change divided by time", top)
     top = paragraph(c, "Acceleration is the change in velocity per unit of time. "
                     "For constant acceleration, compare the start with a later time t.", MARGIN, top, CONTENT)
-    equation(c, r"a=\frac{v(t)-v_0}{t}", W / 2, top - 41, 29)
+    equation(c, r"a=\frac{v(t)-v_0}{t}", W / 2, top - 41, 15)
     top -= 86
     top = paragraph(c, "The numerator v(t) - v<sub>0</sub> is the velocity change. The denominator t "
                     "is elapsed time; this rate equation requires t greater than zero. "
                     "Here a is acceleration, v(t) is the later velocity and v<sub>0</sub> is the starting velocity. "
                     "An acceleration of 3 m/s<super>2</super> adds 3 m/s of velocity every second.", MARGIN, top, CONTENT) - 23
     top = section(c, "2. Undo the division, then add the starting value", top)
-    equation(c, r"a\,t=v(t)-v_0", W / 2, top - 23, 26)
+    equation(c, r"a\,t=v(t)-v_0", W / 2, top - 23, 15)
     top = paragraph(c, "Multiply both sides by t. This preserves equality and turns a rate "
                     "into the total velocity change over t seconds.", MARGIN, top - 54, CONTENT) - 13
-    equation(c, r"v(t)=v_0+a\,t", W / 2, top - 22, 28)
+    equation(c, r"v(t)=v_0+a\,t", W / 2, top - 22, 15)
     top = paragraph(c, "Add v<sub>0</sub> to both sides. Final velocity equals the "
                     "<b>starting velocity plus the velocity gained</b>.", MARGIN, top - 54, CONTENT) - 24
     top = section(c, "3. Insert the values only after the relation is clear", top)
-    equation(c, r"v(4)=2+3\times4=14\ \mathrm{m\,s^{-1}}", W / 2, top - 28, 26)
-    top -= 62
+    equation(c, r"v(4)=2+3\times4", W / 2, top - 18, 15)
+    equation(c, r"v(4)=2+12=14\ \mathrm{m\,s^{-1}}", W / 2, top - 45, 15)
+    top -= 65
     top = note(c, "Read the answer in words", "The cart starts at 2 m/s and gains 12 m/s over 4 s. "
                "Its velocity at the end is 14 m/s. The gained velocity is not the final velocity.", top)
     c.showPage()
@@ -353,33 +354,44 @@ def build_guide():
     top = paragraph(c, "Constant acceleration makes velocity change linearly. The average velocity "
                     "over this interval is halfway between the two endpoints. "
                     "The new symbol v-bar denotes that average; v<sub>0</sub> and v(t) are the start and end velocities.", MARGIN, top, CONTENT)
-    equation(c, r"\bar{v}=\frac{v_0+v(t)}{2}=\frac{2+14}{2}=8\ \mathrm{m\,s^{-1}}", W / 2, top - 40, 24)
-    top -= 89
+    for offset, latex in [(18, r"\bar{v}=\frac{v_0+v(t)}{2}"),
+                          (46, r"\bar{v}=\frac{2+14}{2}"),
+                          (74, r"\bar{v}=\frac{16}{2}"),
+                          (100, r"\bar{v}=8\ \mathrm{m\,s^{-1}}")]:
+        equation(c, latex, W / 2, top - offset, 15)
+    top -= 121
     top = section(c, "3. The average connects velocity to position", top)
-    equation(c, r"\Delta x=\bar{v}\,t=8\times4=32\ \mathrm{m}", W / 2, top - 23, 25)
+    equation(c, r"\Delta x=\bar{v}\,t", W / 2, top - 12, 15)
+    equation(c, r"\Delta x=8\times4", W / 2, top - 37, 15)
+    equation(c, r"\Delta x=32\ \mathrm{m}", W / 2, top - 62, 15)
     top = paragraph(c, "The whole area equals a rectangle at the average height: 8 m/s for 4 s. "
-                    "Delta x means displacement and t means elapsed time. Velocity multiplied by time gives metres.", MARGIN, top - 54, CONTENT) - 17
-    top = note(c, "Distance and displacement", "Displacement is a signed position change. Distance is total path length. "
-               "They have the same magnitude here because the cart never reverses direction.", top, BLUE)
+                    "Delta x means displacement and t means elapsed time. Velocity multiplied by time gives metres.", MARGIN, top - 86, CONTENT) - 17
+    top = paragraph(c, "<b>Distance and displacement:</b> displacement is a signed position change; distance is total path length. They have the same magnitude here because the cart never reverses direction.", MARGIN, top, CONTENT)
     c.showPage()
 
     top = guide_page(c, 4, "Derive the displacement equation", "Source slide 3 / Each line follows from a reason, rather than a rule to memorise.")
-    top = section(c, "1. Connect the two relations we already know", top)
-    top = paragraph(c, "Page 3 gave displacement = average velocity multiplied by time. "
-                    "Page 2 gave final velocity = initial velocity + acceleration multiplied by time. "
-                    "Here delta x is displacement, v<sub>0</sub> is starting velocity, v(t) is final velocity, "
-                    "a is acceleration and t is elapsed time.", MARGIN, top, CONTENT)
-    equation(c, r"\Delta x=\frac{v_0+v(t)}{2}\,t", W / 2, top - 37, 27)
-    top -= 80
-    top = section(c, "2. Replace the final velocity with its expression", top)
-    equation(c, r"\Delta x=\frac{v_0+(v_0+a\,t)}{2}\,t", W / 2, top - 30, 26)
-    top = paragraph(c, "Substitution is valid because v(t) and v<sub>0</sub> + a t are equal. "
-                    "The brackets keep that whole replacement together.", MARGIN, top - 63, CONTENT) - 21
-    top = section(c, "3. Combine like terms, then distribute the time", top)
-    equation(c, r"\Delta x=\frac{2v_0+a\,t}{2}\,t=v_0\,t+\frac{1}{2}a\,t^2", W / 2, top - 36, 26)
-    top = paragraph(c, "The two copies of v<sub>0</sub> combine to 2v<sub>0</sub>. "
-                    "Divide each numerator term by 2, then multiply each term by t. "
-                    "The acceleration term contains t multiplied by t, which is t<super>2</super>.", MARGIN, top - 74, CONTENT) - 22
+    top = paragraph(c, "Carry over the symbols from pages 2-3: delta x is displacement, "
+                    "v<sub>0</sub> starting velocity, v(t) final velocity, a constant acceleration "
+                    "and t elapsed time. Connect the two relations one operation at a time.",
+                    MARGIN, top, CONTENT) - 15
+    steps = [
+        (r"\Delta x=\frac{v_0+v(t)}{2}\,t",
+         "<b>1. Start with page 3:</b> displacement is average velocity times elapsed time."),
+        (r"\Delta x=\frac{v_0+(v_0+a\,t)}{2}\,t",
+         "<b>2. Substitute page 2's expression for v(t).</b> Brackets keep the replacement together."),
+        (r"\Delta x=\frac{2v_0+a\,t}{2}\,t",
+         "<b>3. Combine like terms:</b> the two copies of v<sub>0</sub> become 2v<sub>0</sub>."),
+        (r"\Delta x=\left(v_0+\frac{1}{2}a\,t\right)t",
+         "<b>4. Divide each numerator term by 2:</b> 2v<sub>0</sub> gives v<sub>0</sub>; a t gives one-half a t."),
+        (r"\Delta x=v_0\,t+\frac{1}{2}a\,t\,t",
+         "<b>5. Distribute the outside t:</b> multiply each term inside the brackets by t."),
+        (r"\Delta x=v_0\,t+\frac{1}{2}a\,t^2",
+         "<b>6. Write t times t as t<super>2</super>.</b> Both contributions now have units of length."),
+    ]
+    for latex, reason in steps:
+        height = MathFormula(latex, 15).height
+        equation(c, latex, W / 2, top - height / 2, 15)
+        top = paragraph(c, reason, MARGIN, top - height - 6, CONTENT) - 12
     top = note(c, "Where the one-half comes from", "On page 3's graph, v<sub>0</sub> t is the rectangle. "
                "The extra velocity grows from zero to a t, so its region is a triangle. "
                "A triangle has half the area of a rectangle with the same base and height.", top)
@@ -390,11 +402,11 @@ def build_guide():
     top = paragraph(c, "Metres measure displacement. Seconds measure elapsed time. "
                     "Velocity is metres per second: distance for each second of motion. "
                     "Acceleration is metres per second squared: velocity change for each second.", MARGIN, top, CONTENT) - 14
-    equation(c, r"[v]=\frac{\mathrm{m}}{\mathrm{s}}\qquad[a]=\frac{\mathrm{m}}{\mathrm{s}^{2}}\qquad[t]=\mathrm{s}", W / 2, top - 32, 27)
+    equation(c, r"[v]=\frac{\mathrm{m}}{\mathrm{s}}\qquad[a]=\frac{\mathrm{m}}{\mathrm{s}^{2}}\qquad[t]=\mathrm{s}", W / 2, top - 32, 15)
     top = paragraph(c, "The square brackets here mean <b>the unit of the quantity</b>, not a new operation "
                     "on the cart. This notation is only for checking dimensions.", MARGIN, top - 69, CONTENT) - 23
     top = section(c, "2. Check each term of the equation separately", top)
-    equation(c, r"\frac{\mathrm{m}}{\mathrm{s}}\,\mathrm{s}+\frac{\mathrm{m}}{\mathrm{s}^2}\,\mathrm{s}^2=\mathrm{m}+\mathrm{m}", W / 2, top - 26, 25)
+    equation(c, r"\frac{\mathrm{m}}{\mathrm{s}}\,\mathrm{s}+\frac{\mathrm{m}}{\mathrm{s}^2}\,\mathrm{s}^2=\mathrm{m}+\mathrm{m}", W / 2, top - 26, 15)
     top = paragraph(c, "Both terms describe a length, so adding them makes sense. "
                     "The squared time cancels the squared seconds in acceleration's unit. "
                     "One-half has no unit; it changes the amount, not the kind of quantity.", MARGIN, top - 63, CONTENT) - 23
@@ -422,13 +434,13 @@ def build_guide():
                     "<b>Part (b), displacement:</b> use page 4, rectangle + triangle.<br/>"
                     "<b>Part (c), check:</b> use page 3, area under the velocity-time line.", MARGIN, top, CONTENT) - 24
     top = section(c, "3. Solve part (a) one action at a time", top)
-    equation(c, r"v(4)=v_0+a\,t", W / 2, top - 24, 26)
+    equation(c, r"v(4)=v_0+a\,t", W / 2, top - 24, 15)
     top = paragraph(c, "Write the relationship first. It matches part (a) because it predicts "
                     "velocity from the initial velocity and its change.", MARGIN, top - 54, CONTENT) - 13
-    equation(c, r"a\,t=3\times4=12\ \mathrm{m\,s^{-1}}", W / 2, top - 23, 25)
+    equation(c, r"a\,t=3\times4=12\ \mathrm{m\,s^{-1}}", W / 2, top - 23, 15)
     top = paragraph(c, "Multiply acceleration by elapsed time to find the velocity gained. "
                     "Then add the initial 2 m/s.", MARGIN, top - 54, CONTENT) - 13
-    equation(c, r"v(4)=2+12=14\ \mathrm{m\,s^{-1}}", W / 2, top - 22, 26)
+    equation(c, r"v(4)=2+12=14\ \mathrm{m\,s^{-1}}", W / 2, top - 22, 15)
     top -= 57
     top = paragraph(c, "<b>Connection:</b> the final 14 m/s supplies the graph's endpoint for part (c). "
                     "Part (b) uses the displacement equation; the graph checks it.", MARGIN, top, CONTENT)
@@ -436,18 +448,18 @@ def build_guide():
 
     top = guide_page(c, 7, "Complete and check the assignment", "Homework parts (b) and (c) / Connect calculation, graph and physical meaning.")
     top = section(c, "4. Solve part (b): calculate the two contributions", top)
-    equation(c, r"\Delta x=v_0\,t+\frac{1}{2}a\,t^2", W / 2, top - 25, 28)
+    equation(c, r"\Delta x=v_0\,t+\frac{1}{2}a\,t^2", W / 2, top - 25, 15)
     top = paragraph(c, "Here delta x is displacement, v<sub>0</sub> initial velocity, a acceleration and t time. "
                     "The terms separate starting motion from the extra motion caused by acceleration.", MARGIN, top - 59, CONTENT) - 12
-    equation(c, r"v_0\,t=2\times4=8\ \mathrm{m}", W / 2, top - 21, 25)
-    equation(c, r"\frac{1}{2}a\,t^2=\frac{1}{2}\times3\times4^2=24\ \mathrm{m}", W / 2, top - 77, 25)
+    equation(c, r"v_0\,t=2\times4=8\ \mathrm{m}", W / 2, top - 21, 15)
+    equation(c, r"\frac{1}{2}a\,t^2=\frac{1}{2}\times3\times4^2=24\ \mathrm{m}", W / 2, top - 77, 15)
     top = paragraph(c, "Square time first: 4<super>2</super> = 16. Then multiply by 3 and divide by 2. "
                     "Finally add the two contributions: 8 + 24 = <b>32 m</b>.", MARGIN, top - 114, CONTENT) - 24
     top = section(c, "5. Solve part (c): verify with the graph", top)
     top = paragraph(c, "Draw the line from (0 s, 2 m/s) to (4 s, 14 m/s) and split at 2 m/s. "
                     "Here A means the area under the graph; its subscript names the shape.", MARGIN, top, CONTENT) - 8
-    equation(c, r"A_{\mathrm{rectangle}}=4\times2=8\ \mathrm{m}", W / 2, top - 24, 24)
-    equation(c, r"A_{\mathrm{triangle}}=\frac{1}{2}\times4\times(14-2)=24\ \mathrm{m}", W / 2, top - 82, 24)
+    equation(c, r"A_{\mathrm{rectangle}}=4\times2=8\ \mathrm{m}", W / 2, top - 24, 15)
+    equation(c, r"A_{\mathrm{triangle}}=\frac{1}{2}\times4\times(14-2)=24\ \mathrm{m}", W / 2, top - 82, 15)
     top = paragraph(c, "The triangle's height is the <b>increase</b> in velocity: 14 - 2 = 12 m/s. "
                     "The total graph area is 8 + 24 = 32 m, agreeing with part (b).", MARGIN, top - 121, CONTENT) - 20
     top = note(c, "Interpret the complete answer", "After 4 s, the cart moves at 14 m/s and is 32 m forward "
@@ -462,13 +474,17 @@ def build_guide():
     top = section(c, "Use the same chain with new numbers", top)
     top = paragraph(c, "<b>Choose:</b> v<sub>0</sub> = 1 m/s, a = 2 m/s<super>2</super>, t = 3 s. "
                     "<b>Predict:</b> final velocity should be greater than 1 m/s because acceleration is forward.", MARGIN, top, CONTENT) - 6
-    equation(c, r"v(3)=1+2\times3=7\ \mathrm{m\,s^{-1}}", W / 2, top - 29, 25)
-    equation(c, r"\Delta x=1\times3+\frac{1}{2}\times2\times3^2=3+9=12\ \mathrm{m}", W / 2, top - 94, 24)
+    equation(c, r"v(3)=1+2\times3", W / 2, top - 16, 15)
+    equation(c, r"v(3)=1+6=7\ \mathrm{m\,s^{-1}}", W / 2, top - 42, 15)
+    equation(c, r"\Delta x=1\times3+\frac{1}{2}\times2\times3^2", W / 2, top - 77, 15)
+    equation(c, r"\Delta x=3+9=12\ \mathrm{m}", W / 2, top - 105, 15)
     top = paragraph(c, "The graph rectangle is 3 m; the triangle is 9 m. The triangle has half "
                     "a rectangle's area because the extra velocity grows from zero to 6 m/s.", MARGIN, top - 133, CONTENT) - 22
     top = section(c, "An independent check with average velocity v-bar", top)
-    equation(c, r"\bar{v}=\frac{1+7}{2}=4\ \mathrm{m\,s^{-1}}\quad\Rightarrow\quad\Delta x=4\times3=12\ \mathrm{m}", W / 2, top - 35, 24)
-    top -= 82
+    equation(c, r"\bar{v}=\frac{1+7}{2}", W / 2, top - 16, 15)
+    equation(c, r"\bar{v}=4\ \mathrm{m\,s^{-1}}", W / 2, top - 44, 15)
+    equation(c, r"\Delta x=4\times3=12\ \mathrm{m}", W / 2, top - 69, 15)
+    top -= 84
     top = note(c, "Explain the logic without looking at a formula", "Acceleration gives the velocity change. "
                "Add the starting velocity to get the final value. With linear change, average the endpoints. "
                "Multiply that average by time to obtain displacement.", top)
@@ -480,14 +496,14 @@ def build_guide():
     return path
 
 
-def build_spec():
+def build_spec(portable=True):
     data = {
         "course_code": "PHYSICS DEMO",
         "course_name": "Constant acceleration - original public lesson",
         "lecture": "From a model to a solved assignment",
         "file_stem": "motion",
-        "source_pdf": "examples/source-slides.pdf",
-        "translated_pdf": "examples/translated-slides.pdf",
+        "source_pdf": "examples/source-slides.pdf" if portable else str(OUT / "source-slides.pdf"),
+        "translated_pdf": "examples/translated-slides.pdf" if portable else str(OUT / "translated-slides.pdf"),
         "bilingual_layout": {"page_width": 1190.551, "page_height": 841.89,
                              "annotation_height": 260},
         "labels": {"source_heading": "Source slide - academic English",
@@ -559,47 +575,62 @@ def make_previews(paths, temporary):
 
 
 def main():
-    OUT.mkdir(exist_ok=True)
-    source = build_slides("source")
-    target = build_slides("target")
-    guide = build_guide()
-    spec = build_spec()
-    with tempfile.TemporaryDirectory(prefix="selfcollege-demo-") as temp_name:
+    global OUT
+    destination = OUT
+    # Render and validate every example before changing the maintained bundle.
+    with tempfile.TemporaryDirectory(prefix=".selfcollege-demo-", dir=ROOT.parent) as temp_name:
         temp = Path(temp_name)
-        subprocess.run([sys.executable, str(ROOT / "scripts/render_study_pdfs.py"),
-                        "--spec", str(spec), "--output-dir", str(temp)], cwd=ROOT, check=True)
-        companion = OUT / "slide-companion.pdf"
-        shutil.copyfile(temp / "motion_slide-companion.pdf", companion)
-        paths = [source, target, companion, guide]
-        previews = make_previews(paths, temp)
-        # Keep a complete render set outside version control for real visual QA.
-        qa = ROOT / "tmp" / "example-qa"
-        qa.mkdir(parents=True, exist_ok=True)
-        for page in temp.glob("*.png"):
-            shutil.copyfile(page, qa / page.name)
-        source_pages = PdfReader(source).pages
-        target_pages = PdfReader(target).pages
-        assert len(source_pages) == len(target_pages) == 3
-        assert all(list(a.mediabox) == list(b.mediabox)
-                   for a, b in zip(source_pages, target_pages))
-        # Compare all content operators after removing wording operands. This
-        # verifies shared drawing/text origins, not merely equal page boxes.
-        def geometry(page):
-            return [(repr(operands) if op not in (b"Tj", b"TJ") else "wording", op)
-                    for operands, op in ContentStream(page.get_contents(), page.pdf).operations]
-        assert all(geometry(a) == geometry(b) for a, b in zip(source_pages, target_pages))
-        report = {"authorship": "Original demo authored for selfcollege-waba; no private course content",
-                  "slide_layout": "Shared renderer, fixed text origins, identical graphs and formulas",
-                  "content_operator_geometry_equal": True,
-                  "pdf_pages": {path.name: len(PdfReader(path).pages) for path in paths},
-                  "rendered_pages": sum(len(items) for items in previews.values()),
-                  "homework": "Exact authored question embedded on study-guide page 6; solution pages 6-7",
-                  "formula_rendering": "Vector glyph outlines and horizontal fraction rules; no formula bitmap",
-                  "visual_review_status": "pending for regenerated outputs",
-                  "visual_review_required": True}
-        (OUT / "validation.json").write_text(json.dumps(report, indent=2) + "\n")
-        print(json.dumps({"outputs": [str(path.relative_to(ROOT)) for path in paths],
-                          "qa_directory": str(qa.relative_to(ROOT)), **report}, indent=2))
+        OUT = temp / "examples"
+        OUT.mkdir()
+        try:
+            source = build_slides("source")
+            target = build_slides("target")
+            guide = build_guide()
+            spec = build_spec(portable=False)
+            subprocess.run([sys.executable, str(ROOT / "scripts/render_study_pdfs.py"),
+                            "--spec", str(spec), "--output-dir", str(temp / "composed")], cwd=ROOT, check=True)
+            companion = OUT / "slide-companion.pdf"
+            shutil.copyfile(temp / "composed" / "motion_slide-companion.pdf", companion)
+            paths = [source, target, companion, guide]
+            previews = make_previews(paths, temp)
+            # Keep a complete render set outside version control for real visual QA.
+            qa = ROOT / "tmp" / "example-qa"
+            qa.mkdir(parents=True, exist_ok=True)
+            for page in temp.glob("*.png"):
+                shutil.copyfile(page, qa / page.name)
+            source_pages = PdfReader(source).pages
+            target_pages = PdfReader(target).pages
+            assert len(source_pages) == len(target_pages) == 3
+            assert all(list(a.mediabox) == list(b.mediabox)
+                       for a, b in zip(source_pages, target_pages))
+            # Compare all content operators after removing wording operands. This
+            # verifies shared drawing/text origins, not merely equal page boxes.
+            def geometry(page):
+                return [(repr(operands) if op not in (b"Tj", b"TJ") else "wording", op)
+                        for operands, op in ContentStream(page.get_contents(), page.pdf).operations]
+            assert all(geometry(a) == geometry(b) for a, b in zip(source_pages, target_pages))
+            report = {"authorship": "Original demo authored for selfcollege-waba; no private course content",
+                      "slide_layout": "Shared renderer, fixed text origins, identical graphs and formulas",
+                      "content_operator_geometry_equal": True,
+                      "pdf_pages": {path.name: len(PdfReader(path).pages) for path in paths},
+                      "rendered_pages": sum(len(items) for items in previews.values()),
+                      "homework": "Exact authored question embedded on study-guide page 6; solution pages 6-7",
+                      "formula_rendering": "Vector glyph outlines and horizontal fraction rules; no formula bitmap",
+                      "visual_review_status": "pending for regenerated outputs",
+                      "visual_review_required": True}
+            (OUT / "validation.json").write_text(json.dumps(report, indent=2) + "\n")
+
+            build_spec(portable=True)
+            generated = sorted(path for path in OUT.rglob("*") if path.is_file())
+            publications = [{"path": str(destination / path.relative_to(OUT)), "stage": str(path)}
+                            for path in generated]
+            for item in publications:
+                Path(item["path"]).parent.mkdir(parents=True, exist_ok=True)
+            publish_outputs(publications, [], temp)
+        finally:
+            OUT = destination
+    print(json.dumps({"outputs": [str(destination / path.name) for path in paths],
+                      "qa_directory": str(qa.relative_to(ROOT)), **report}, indent=2))
 
 
 if __name__ == "__main__":

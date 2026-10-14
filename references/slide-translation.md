@@ -16,6 +16,8 @@ Duplicate the deck to a new file. Replace text in corresponding shapes/runs/tabl
 
 Fit translation through precise concise wording, line breaks, and glyph-complete fonts within the same region bounds and hierarchy. Do not combine boxes into one prose column. If text expansion cannot fit readably without changing layout, identify and resolve the specific region rather than claiming perfection. Export source and translated decks using identical page settings; inspect both. Deliver an editable translated PPTX only if actually created and requested.
 
+Preserve the meaning of bold and italic emphasis in corresponding translated phrases, using appropriate font faces or a verified equivalent treatment. Check rotated graph labels against their actual source direction. A region that only fits after becoming unreadably small is unresolved: shorten equivalent wording or regroup adjacent prose within the same logical text box while protecting equations and graphics. Record the region and fail final acceptance if a readable faithful fit remains unavailable; do not close the ledger with a tiny-font substitute.
+
 ## PDF-only
 
 Prefer page/object-aware reconstruction. Retain page geometry and graphics while replacing corresponding text. Masking must restore the actual background and preserve axes, gridlines, formulas, table rules, and diagrams; a white rectangle over colored content is not faithful reconstruction. Inspect every edited region.
@@ -35,3 +37,5 @@ Put all added terminology, foundation notes, classroom remarks with locators, ho
 ## Verify every pair
 
 Compare titles, bullet hierarchy, text boxes, tables, figures, axes/legends, values, equations, colors, and footnotes region by region. Check omissions, untranslated labels, duplicated source prose, wrong emphasis, substituted fonts, clipping, overlap, and lost background details. Confirm added teaching stays outside both panels. Report unresolved regions; page-count equality alone does not establish fidelity.
+
+Reconcile the full requested page set and the full translatable-region inventory before marking a translation complete. Missing translations or unresolved fitting errors must remain failures or explicitly labeled partial work. A tool must not silently fall back to an earlier subset and report success for the whole lecture. Inspect data and dates for accidental deletion or duplication after text replacement, including table values, mathematical labels, and image/graph text from nested PDF objects.

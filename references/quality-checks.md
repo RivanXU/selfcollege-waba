@@ -2,11 +2,11 @@
 
 # Study-pack acceptance
 
-Check actual reasoning and rendered artifacts before delivering or revising a pack.
+Check actual reasoning and rendered artifacts before delivering or revising a pack. Use a course-owned [acceptance ledger](acceptance-ledger-template.md) to reconcile every requested source page and homework stem/subpart with actual guide locators, and every final output page with its reviewed image and observed result. Record gaps instead of treating an unperformed check as complete.
 
 | Area | Observable acceptance |
 | --- | --- |
-| Coverage/order | All requested source pages accounted for; consecutive modules follow source order; covers/reveals stay in the companion. |
+| Coverage/order | All requested source pages and visible instructor annotations accounted for; consecutive modules follow source order; covers/reveals stay in the companion. |
 | Logic | Opening explains the lecture question; each module states its purpose and connection to neighboring modules. |
 | Foundations | Prerequisites used in reasoning are explained, known from stated background, or precisely linked; compressed slide detail is expanded. |
 | Equations | Source structure retained; fractions have bars; scripts/signs correct; engine limitations visible. |
@@ -16,10 +16,12 @@ Check actual reasoning and rendered artifacts before delivering or revising a pa
 | Homework | All requested wording/conditions/subparts present; concepts and solution steps mapped; gaps and answer conflicts explicit. |
 | Translation | Every translatable element covered; original and translated objects correspond; panel parity checked separately. |
 | Notes | All additional terms, foundations, classroom remarks, homework references, and corrections below both slide panels. |
-| Readability | Every page visually inspected for legible text, whitespace, proper math, clipping/overlap/glyph loss; related reasoning stays together. |
+| Readability | Every page visually inspected for legible text, whitespace, proper math, clipping/overlap/glyph loss, text direction and shaping; related reasoning stays together. |
 | Evidence | Source, transcript, foundations, derivations, practice, and uncertainty distinguishable without sentence-level citation clutter. |
 | Continuity | Actual completion separate from demonstrated understanding; artifacts/records exist where claimed. |
 
 For long lectures, map the full lesson then work in consecutive batches. Validate each batch and the final concatenation. Partial coverage is labeled until every requested page is processed. Narrow corrections preserve unrelated chapters.
 
 For changes to this skill test structure and behavior. Independent forward tests should cover a quantitative lesson with a forgotten prerequisite, cross-module homework, a humanities argument, a code trace, a dense translated page, an unreadable symbol, and inaccessible continuation history. Give an evaluator raw input and the skill without intended answers; inspect actual explanations/artifacts and repair observed failures.
+
+Keep evidence classes explicit: an authored example, a real supplied lecture, a text-only trial, a generated PDF, and a reviewed page prove different things. A short real excerpt does not establish full-lecture acceptance. Test an entire supplied teaching document through both PDF paths, reconcile its full source and homework inventory, and inspect all resulting pages. If only a guide or selected paired pages were produced, record that exact scope and keep the complete dual-PDF test open.

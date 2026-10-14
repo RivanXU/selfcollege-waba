@@ -14,11 +14,12 @@ If editable slides are unavailable, manually reconstruct a faithful translation 
 
 ## Readable knowledge blocks
 
-- Study-guide defaults: A4 portrait, 47-point margins, 11.5-point body with 18.5-point leading; 13.2-point section headings; 21-point page titles; 17-point mathematics.
+- Study-guide defaults: A4 portrait, 47-point margins, 11.5-point body with 18.5-point leading; 13.2-point section headings; 21-point page titles; 15-point mathematics. Display math is about 1.3 times the body size, with 3-point vertical padding on each side. Symbol legends use math at 1.2 times their table text size. Fractions require more physical height than a single text line; give them that height without enlarging every glyph.
 - Group a connected concept under one heading. Keep its prerequisites, derivation, symbol definitions, worked example and interpretation together or continue onto an explicitly titled next page. Leave 16 points between concept groups.
 - A page can contain multiple related blocks, but its structure follows the knowledge dependency, not the source slide's line breaks. Avoid paragraphs that cram several unexplained operations into one sentence.
 - Slide-companion defaults: 1190.551 x 841.89 points, 36-point outer margins, a 32-point column gap and a 200-point annotation band. Both complete pages fit the available viewports at one shared scale. Increase the output page height or annotation band for more notes; avoid making the text smaller.
 - Body, vocabulary tables, equations, captions and notes retain distinct roles. Source PDF text and graphics remain vector where they were vector; scanned source pages remain scans.
+- Judge mathematical size against neighboring body text at actual reading scale. Use a consistent moderate formula size throughout a guide; split long expressions instead of enlarging them into a headline or shrinking one formula to fit. A lecture's preserved source panels retain the source's own typography and a shared panel scale.
 - Colors are secondary: navy `#17334D`, teal `#117E82`, ink `#263746`, muted `#607485`, light blue `#EDF4FA`, light green `#ECF7F5`, amber `#FFF5E9`. Source labels and warning text convey the meaning without color.
 
 ## Exact-layout paired-PDF input
@@ -29,7 +30,7 @@ The command-line entry point is:
 python3 scripts/render_study_pdfs.py --spec /absolute/path/content.json --output-dir /absolute/path/output
 ```
 
-Install the declared Python dependencies from `requirements.txt`. The bundled Noto Sans SC font covers English, Chinese and some other scripts; a course may pass `--font /absolute/path/covered.ttf`. Coverage is checked before text is drawn. The math renderer uses its own mathematical fonts.
+Install the declared Python dependencies from `requirements.txt`. The bundled Noto Sans SC font covers English, Chinese and some other scripts; a course may pass `--font /absolute/path/covered.ttf`. Coverage is checked before text is drawn. Font coverage alone does not establish correct shaping or text direction. The bundled text path rejects right-to-left scripts; use a shaping-aware engine and verify its local PDF for those languages or other scripts requiring complex shaping. Paired source/translated PDFs may come from that engine. The math renderer uses its own mathematical fonts.
 
 A paired companion requires `source_pdf` and `translated_pdf`. Both PDFs must contain the same number of pages, and each paired visible page must have the same physical dimensions after rotation and PDF UserUnit normalization, within 0.01 point. The `bilingual` entries cover every source page exactly once in order, from 1 to N. This minimal specification makes one companion and one guide:
 
@@ -90,7 +91,10 @@ A formula block requires `latex` and `reason`. Use `\frac{numerator}{denominator
 The fraction rule applies to displayed mathematical division such as `a/b` or `dy/dx`. Preserve actual programming operators, file paths, unit labels and structural slash notation from the source. Ordinary prose/code outside formula blocks is untouched. Inside a formula, mark a literal unit/code/text region explicitly, for example `\mathrm{m/s}`, `\mathtt{a/b}` or `\text{path/to/file}`. A structural slash can be written as `\text{/}`. These literal regions retain their slash; they must not be used to disguise a displayed fraction.
 
 ```json
-{"type":"formula","label":"Step 2: substitute the values","latex":"r=\\frac{12}{4}=3","reason":"Replace the numerator and denominator using the quantities identified in the question.","symbols":[["r","A unitless ratio because both quantities have the same unit"]]}
+[
+  {"type":"formula","label":"Step 2: substitute the values","latex":"r=\\frac{12}{4}","reason":"Replace the numerator and denominator using the quantities identified in the question.","symbols":[["r","A unitless ratio because both quantities have the same unit"]]},
+  {"type":"formula","label":"Step 3: evaluate the division","latex":"r=3","reason":"Twelve divided by four equals three. The compared quantity is three times its reference quantity."}
+]
 ```
 
 The first column of `symbols` is a LaTeX math expression, also rendered as a vector formula. The second column is explanatory text. Define every newly introduced symbol nearby, including its units, role, index and relevant domain. The renderer cannot decide whether those definitions or the mathematical claim are correct; the author performs that check.
@@ -127,7 +131,7 @@ Each `guide` entry describes one explicit page. Supported blocks are:
 
 Overflow raises an error. Split at a pedagogical boundary and add an explicit continuation page with the previous step and next question. The renderer does not delete text, shrink body fonts, truncate notes or silently add pages that would break page references.
 
-`source_crop.clip` is `[left, top, right, bottom]` in physical PDF points, measured from the top-left corner of the rotated visible source page. It must stay within that page. Cropping changes the visible region, but does not remove hidden material and must never be used for privacy redaction. Composition omits interactive forms, links and annotations; flatten legitimate source annotations to page content in a separate copy if they must appear.
+`source_crop.clip` is `[left, top, right, bottom]` in physical PDF points, measured from the top-left corner of the rotated visible source page. It must stay within that page. Cropping changes the visible region, but does not remove hidden material and must never be used for privacy redaction. Composition omits interactive actions and links. A visible non-link annotation causes an explicit error: flatten legitimate handwriting, highlights, comment appearances, stamps, or form values into a separate copy with a capable PDF tool, then compare the rendered copy with the original before composition. Do not discard instructor annotations to bypass the check. Hidden/invisible annotations are omitted.
 
 Text accepts simple attribute-free `<b>`, `<strong>`, `<i>`, `<em>`, `<u>`, `<strike>`, `<sub>`, `<super>`, `<sup>` and `<br/>`. Escape a literal ampersand or less-than sign as `&amp;` or `&lt;`. Images use local `image` blocks; embedded HTML resources and remote image URLs are rejected.
 
@@ -139,9 +143,9 @@ A translation array is not an exact-layout slide. If a reader intentionally requ
 
 Defaults and output filenames are English: `<file_stem>_study-guide.pdf` and `<file_stem>_slide-companion.pdf`. Actual teaching and translation language follow the learner's course preference, independently of public package naming.
 
-Use `labels` to change `source_heading`, `translation_heading`, `terms_heading`, `guide_name`, `bilingual_name`, `guide_header`, `bilingual_header`, `source_footer` or `guide_reference_footer`. Header labels follow the output name when omitted. Footer placeholders are restricted to `{filename}`, `{page}` and `{pages}` in their respective fields. Names must be plain filename stems; the two outputs must have distinct names.
+Use `labels` to change `source_heading`, `translation_heading`, `terms_heading`, `symbol_heading`, `symbol_meaning_heading`, `guide_name`, `bilingual_name`, `guide_header`, `bilingual_header`, `source_footer` or `guide_reference_footer`. Set the two symbol headings in the learner's chosen language, independently of the public package language. Header labels follow the output name when omitted. Footer placeholders are restricted to `{filename}`, `{page}` and `{pages}` in their respective fields. Names must be plain filename stems; the two outputs must have distinct names. Headers and footer pairs are measured before drawing; shorten metadata or use compact page ranges when they cannot fit, keeping the full title and detailed locators in the page body or annotation band.
 
-Use `--style /absolute/path/style-overrides.json` for a course-owned JSON containing only known keys from `assets/style_tokens.json`. Colors are six-digit `#RRGGBB`; dimensions are finite positive numbers; leading is at least body font size. Overrides preserve bundled assets. Do not lower readable sizes to force more content onto a page.
+Use `--style /absolute/path/style-overrides.json` for a course-owned JSON containing only known keys from `assets/style_tokens.json`. Colors are six-digit `#RRGGBB`; dimensions are finite positive numbers; leading is at least body font size. Guide `formula_size` must be at least the body size and no more than 1.5 times it; the default is about 1.3 times. This keeps equations readable without turning them into headlines. Overrides preserve bundled assets. Do not lower readable sizes to force more content onto a page.
 
 ## Safety and verification
 

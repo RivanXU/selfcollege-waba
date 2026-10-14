@@ -13,5 +13,12 @@
   "formula_rendering": "Vector glyph outlines and horizontal fraction rules; no formula bitmap",
   "visual_review_status": "completed for this build",
   "visual_review_required": false,
-  "visual_review_scope": "All 17 pages inspected for clipping, overlap, readability, fraction typesetting, symbol placement, source/mirror fidelity and bottom annotations"
+  "visual_review_scope": "All 17 current pages rendered and inspected; guide formula pages 2, 3, 4, 5, 7 and 8 checked at 110 dpi for reading detail. Both slide copies and all 3 paired pages checked; source and mirror geometry equal. This is an authored English demonstration, not an authentic lecture or cross-language proof.",
+  "formula_size_points": {
+    "guide": 15,
+    "slide": 21,
+    "guide_body": 11.1,
+    "slide_body": 17
+  },
+  "formula_vertical_padding_points": 3
 }
